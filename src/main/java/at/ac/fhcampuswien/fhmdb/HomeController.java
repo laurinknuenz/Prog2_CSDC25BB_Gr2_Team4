@@ -52,10 +52,8 @@ public class HomeController implements Initializable {
         // Filters using Genre only, for now.
         genreComboBox.setOnAction(actionEvent -> {
             Genre selectedGenre = genreComboBox.getValue();
-            if(selectedGenre != Genre.ALL){
-                observableMovies.clear();
-                observableMovies.addAll(Movie.filterMoviesByGenre(allMovies, selectedGenre));
-            }
+            observableMovies.clear();
+            if(selectedGenre != Genre.ALL) observableMovies.addAll(Movie.filterMoviesByGenre(allMovies, selectedGenre));
             else  observableMovies.addAll(allMovies);
         });
 
