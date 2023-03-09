@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
@@ -18,48 +19,59 @@ import java.util.ResourceBundle;
 public class HomeController implements Initializable {
     @FXML
     public JFXButton searchBtn;
-
     @FXML
     public TextField searchField;
-
     @FXML
     public JFXListView movieListView;
-
     @FXML
-    public JFXComboBox genreComboBox;
-
+    public JFXComboBox<Genre> genreComboBox;
     @FXML
     public JFXButton sortBtn;
-
     public List<Movie> allMovies = Movie.initializeMovies();
-
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
+    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        observableMovies.addAll(allMovies);         // add dummy data to observable list
-
+        observableMovies.addAll(allMovies);
         // initialize UI stuff
-        movieListView.setItems(observableMovies);   // set data of observable list to list view
-        movieListView.setCellFactory(movieListView -> new MovieCell()); // use custom cell factory to display data
+        movieListView.setItems(observableMovies);
+        movieListView.setCellFactory(movieListView -> new MovieCell());
 
-        // TODO add genre filter items with genreComboBox.getItems().addAll(...)
+        genreComboBox.getItems().addAll(Genre.values());
         genreComboBox.setPromptText("Filter by Genre");
 
-        // TODO add event handlers to buttons and call the regarding methods
-        // either set event handlers in the fxml file (onAction) or add them here
+        //TODO: make both filters work toghether.
 
-        // Sort button example:
+        // Filters using search text only, for now.
+        searchBtn.setOnAction(actionEvent -> {
+            String searchTerm = searchField.getText();
+            observableMovies.clear();
+            observableMovies.addAll(Movie.filterMovies(allMovies, searchTerm));
+        });
+
+        // Filters using Genre only, for now.
+        genreComboBox.setOnAction(actionEvent -> {
+            Genre selectedGenre = genreComboBox.getValue();
+            if(selectedGenre != Genre.ALL){
+                observableMovies.clear();
+                observableMovies.addAll(Movie.filterMoviesByGenre(allMovies, selectedGenre));
+            }
+            else  observableMovies.addAll(allMovies);
+        });
+
+        sortObservableList();
+    }
+
+    private void sortObservableList() {
+        //keep this last, so it filters the "already previously filtered list"
         sortBtn.setOnAction(actionEvent -> {
             if(sortBtn.getText().equals("Sort (asc)")) {
-                // TODO sort observableMovies ascending
+                FXCollections.reverse(observableMovies);
                 sortBtn.setText("Sort (desc)");
             } else {
-                // TODO sort observableMovies descending
+                FXCollections.reverse(observableMovies);
                 sortBtn.setText("Sort (asc)");
             }
         });
-
-
     }
 }

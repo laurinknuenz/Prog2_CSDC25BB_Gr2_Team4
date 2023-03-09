@@ -20,12 +20,14 @@ public class MovieCell extends ListCell<Movie> {
 
         if (empty || movie == null) {
             setText(null);
+            setGraphic(null);
         } else {
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
             detail.setText(
-                    movie.getDescription() != null
-                            ? movie.getDescription()
+                    (movie.getDescription() != null)
+                            ? (movie.getDescription() + "\n\n " +
+                            movie.getGenres().stream().map(Enum::name).sorted().reduce((a, b) -> a + ", " + b).orElse(""))
                             : "No description available"
             );
 
