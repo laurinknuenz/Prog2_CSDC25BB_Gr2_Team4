@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -48,30 +49,28 @@ public class HomeController implements Initializable {
         display all the movies in that genre but still only the movies filtered by genre AND text, don't know, if this bug exists also the other way
         round, if you filter for text first, then for genre, and change the genre back to ALL, but i dont think so*/
 
-        // Filters using search text only, for now.
         searchBtn.setOnAction(actionEvent -> {
             currentTextFilter = searchField.getText();
             if (currentGenreFilter == Genre.ALL) {
-                observableMovies.clear();
+                clearObservableMovies();
                 observableMovies.addAll(Movie.filterMovies(currentTextFilter, null));
             } else {
                 List<Movie> genreFilteredMovies = new ArrayList<>(observableMovies);
-                observableMovies.clear();
+                clearObservableMovies();
                 observableMovies.addAll(Movie.filterMovies(currentTextFilter, genreFilteredMovies));
             }
         });
 
-        // Filters using Genre only, for now.
         genreComboBox.setOnAction(actionEvent -> {
             currentGenreFilter = genreComboBox.getValue();
             if (currentTextFilter.equals("")) {
-                observableMovies.clear();
+                clearObservableMovies();
                 if (currentGenreFilter != Genre.ALL)
                     observableMovies.addAll(Movie.filterMoviesByGenre(currentGenreFilter, null));
                 else observableMovies.addAll(Movie.allMovies);
             } else {
                 List<Movie> textFilteredMovies = new ArrayList<>(observableMovies);
-                observableMovies.clear();
+                clearObservableMovies();
                 if (currentGenreFilter != Genre.ALL)
                     observableMovies.addAll(Movie.filterMoviesByGenre(currentGenreFilter, textFilteredMovies));
                 else observableMovies.addAll(textFilteredMovies);
@@ -81,14 +80,19 @@ public class HomeController implements Initializable {
         sortObservableList();
     }
 
+    private void clearObservableMovies() {
+        observableMovies.clear();
+    }
+
     private void sortObservableList() {
-        //keep this last, so it filters the "already previously filtered list"
         sortBtn.setOnAction(actionEvent -> {
             if (sortBtn.getText().equals("Sort (asc)")) {
-                FXCollections.reverse(observableMovies);
+                Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle);
+                FXCollections.sort(observableMovies, titleComparator);
                 sortBtn.setText("Sort (desc)");
             } else {
-                FXCollections.reverse(observableMovies);
+                Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle).reversed();
+                FXCollections.sort(observableMovies, titleComparator);
                 sortBtn.setText("Sort (asc)");
             }
         });
