@@ -40,9 +40,9 @@ public class Movie {
         allMovies.add(new Movie("G Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ROMANCE));
     }
 
-    public static List<Movie> filterMoviesByGenre(List<Movie> movies, Genre genre) {
+    public static List<Movie> filterMoviesByGenre(Genre genre) {
         List<Movie> filteredMovies = new ArrayList<>();
-        for (Movie movie : movies) {
+        for (Movie movie : allMovies) {
             if (movie.getGenres().contains(genre)) {
                 filteredMovies.add(movie);
             }
@@ -50,9 +50,9 @@ public class Movie {
         return filteredMovies;
     }
 
-    public static List<Movie> filterMovies(List<Movie> movies, String searchTerm) {
+    public static List<Movie> filterMovies(String searchTerm) {
         List<Movie> filteredMovies = new ArrayList<>();
-        for (Movie movie : movies) {
+        for (Movie movie : allMovies) {
             if (movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase()) || movie.getDescription().toLowerCase().contains(searchTerm.toLowerCase())) {
                 filteredMovies.add(movie);
             }

@@ -46,7 +46,7 @@ public class HomeController implements Initializable {
         searchBtn.setOnAction(actionEvent -> {
             String searchTerm = searchField.getText();
             observableMovies.clear();
-            observableMovies.addAll(Movie.filterMovies(Movie.allMovies, searchTerm));
+            observableMovies.addAll(Movie.filterMovies(searchTerm));
         });
 
         // Filters using Genre only, for now.
@@ -54,7 +54,7 @@ public class HomeController implements Initializable {
             Genre selectedGenre = genreComboBox.getValue();
             observableMovies.clear();
             if (selectedGenre != Genre.ALL)
-                observableMovies.addAll(Movie.filterMoviesByGenre(Movie.allMovies, selectedGenre));
+                observableMovies.addAll(Movie.filterMoviesByGenre(selectedGenre));
             else observableMovies.addAll(Movie.allMovies);
         });
 
