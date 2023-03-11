@@ -27,19 +27,17 @@ public class Movie {
         return genres;
     }
 
-    public static List<Movie> initializeMovies(){
-        List<Movie> movies = new ArrayList<>();
+    public static List<Movie> allMovies = new ArrayList<>();
 
+    public static void initializeMovies(){
         // TODO: Try to mention some movies that actually exist lol
-        movies.add(new Movie("A The first movie","When the homework is due, two students have to ", Genre.DRAMA, Genre.ACTION, Genre.THRILLER));
-        movies.add(new Movie("B Campus krampus","Some film about christmas and vienna Fh campus idk.", Genre.ACTION, Genre.THRILLER));
-        movies.add(new Movie("C Forrest favoriten","I honestly dont know, but it is the third movie in the list", Genre.COMEDY, Genre.DRAMA, Genre.ROMANCE));
-        movies.add(new Movie("D Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ANIMATION, Genre.DRAMA, Genre.BIOGRAPHY));
-        movies.add(new Movie("E Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ANIMATION, Genre.DRAMA, Genre.BIOGRAPHY));
-        movies.add(new Movie("F Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ANIMATION, Genre.DRAMA, Genre.BIOGRAPHY));
-        movies.add(new Movie("G Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ROMANCE));
-
-        return movies;
+        allMovies.add(new Movie("A The first movie","When the homework is due, two students have to ", Genre.DRAMA, Genre.ACTION, Genre.THRILLER));
+        allMovies.add(new Movie("B Campus krampus","Some film about christmas and vienna Fh campus idk.", Genre.ACTION, Genre.THRILLER));
+        allMovies.add(new Movie("C Forrest favoriten","I honestly dont know, but it is the third movie in the list", Genre.COMEDY, Genre.DRAMA, Genre.ROMANCE));
+        allMovies.add(new Movie("D Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ANIMATION, Genre.DRAMA, Genre.BIOGRAPHY));
+        allMovies.add(new Movie("E Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ANIMATION, Genre.DRAMA, Genre.BIOGRAPHY));
+        allMovies.add(new Movie("F Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ANIMATION, Genre.DRAMA, Genre.BIOGRAPHY));
+        allMovies.add(new Movie("G Taylor's car","Cats, drama, I literally have no idea what im lorem ipsum", Genre.ROMANCE));
     }
 
     public static List<Movie> filterMoviesByGenre(List<Movie> movies, Genre genre) {
