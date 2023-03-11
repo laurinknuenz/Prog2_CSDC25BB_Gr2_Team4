@@ -13,6 +13,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class HomeController implements Initializable {
@@ -26,8 +28,9 @@ public class HomeController implements Initializable {
     public JFXComboBox<Genre> genreComboBox;
     @FXML
     public JFXButton sortBtn;
-
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+    private String currentTextFilter = "";
+    private Genre currentGenreFilter = Genre.ALL;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -40,22 +43,39 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().addAll(Genre.values());
         genreComboBox.setPromptText("Filter by Genre");
 
-        //TODO: make both filters work toghether.
+        //TODO: Fix Filter Bug
+        /*There is a bug that when you filter for genre, and than for text while genre still activated, and then remove the text filter again, it wont
+        display all the movies in that genre but still only the movies filtered by genre AND text, don't know, if this bug exists also the other way
+        round, if you filter for text first, then for genre, and change the genre back to ALL, but i dont think so*/
 
         // Filters using search text only, for now.
         searchBtn.setOnAction(actionEvent -> {
-            String searchTerm = searchField.getText();
-            observableMovies.clear();
-            observableMovies.addAll(Movie.filterMovies(searchTerm));
+            currentTextFilter = searchField.getText();
+            if (currentGenreFilter == Genre.ALL) {
+                observableMovies.clear();
+                observableMovies.addAll(Movie.filterMovies(currentTextFilter, null));
+            } else {
+                List<Movie> genreFilteredMovies = new ArrayList<>(observableMovies);
+                observableMovies.clear();
+                observableMovies.addAll(Movie.filterMovies(currentTextFilter, genreFilteredMovies));
+            }
         });
 
         // Filters using Genre only, for now.
         genreComboBox.setOnAction(actionEvent -> {
-            Genre selectedGenre = genreComboBox.getValue();
-            observableMovies.clear();
-            if (selectedGenre != Genre.ALL)
-                observableMovies.addAll(Movie.filterMoviesByGenre(selectedGenre));
-            else observableMovies.addAll(Movie.allMovies);
+            currentGenreFilter = genreComboBox.getValue();
+            if (currentTextFilter.equals("")) {
+                observableMovies.clear();
+                if (currentGenreFilter != Genre.ALL)
+                    observableMovies.addAll(Movie.filterMoviesByGenre(currentGenreFilter, null));
+                else observableMovies.addAll(Movie.allMovies);
+            } else {
+                List<Movie> textFilteredMovies = new ArrayList<>(observableMovies);
+                observableMovies.clear();
+                if (currentGenreFilter != Genre.ALL)
+                    observableMovies.addAll(Movie.filterMoviesByGenre(currentGenreFilter, textFilteredMovies));
+                else observableMovies.addAll(textFilteredMovies);
+            }
         });
 
         sortObservableList();
