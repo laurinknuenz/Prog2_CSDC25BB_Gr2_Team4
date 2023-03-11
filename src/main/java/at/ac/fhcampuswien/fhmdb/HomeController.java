@@ -8,12 +8,12 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -30,13 +30,14 @@ public class HomeController implements Initializable {
     @FXML
     public JFXButton sortBtn;
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
-    private String currentTextFilter = "";
-    private Genre currentGenreFilter = Genre.ALL;
+    public List<Movie> allMovies = Movie.initializeMovies();
+    private static boolean isTextFieldActive;
+    private static boolean isGenreFilterActive;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Movie.initializeMovies();
-        observableMovies.addAll(Movie.allMovies);
+        observableMovies.addAll(allMovies);
         // initialize UI stuff
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());
@@ -44,57 +45,52 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().addAll(Genre.values());
         genreComboBox.setPromptText("Filter by Genre");
 
-        //TODO: Fix Filter Bug
-        /*There is a bug that when you filter for genre, and than for text while genre still activated, and then remove the text filter again, it wont
-        display all the movies in that genre but still only the movies filtered by genre AND text, don't know, if this bug exists also the other way
-        round, if you filter for text first, then for genre, and change the genre back to ALL, but i dont think so*/
-
-        searchBtn.setOnAction(actionEvent -> {
-            currentTextFilter = searchField.getText();
-            if (currentGenreFilter == Genre.ALL) {
-                clearObservableMovies();
-                observableMovies.addAll(Movie.filterMovies(currentTextFilter, null));
-            } else {
-                List<Movie> genreFilteredMovies = new ArrayList<>(observableMovies);
-                clearObservableMovies();
-                observableMovies.addAll(Movie.filterMovies(currentTextFilter, genreFilteredMovies));
-            }
-        });
-
-        genreComboBox.setOnAction(actionEvent -> {
-            currentGenreFilter = genreComboBox.getValue();
-            if (currentTextFilter.equals("")) {
-                clearObservableMovies();
-                if (currentGenreFilter != Genre.ALL)
-                    observableMovies.addAll(Movie.filterMoviesByGenre(currentGenreFilter, null));
-                else observableMovies.addAll(Movie.allMovies);
-            } else {
-                List<Movie> textFilteredMovies = new ArrayList<>(observableMovies);
-                clearObservableMovies();
-                if (currentGenreFilter != Genre.ALL)
-                    observableMovies.addAll(Movie.filterMoviesByGenre(currentGenreFilter, textFilteredMovies));
-                else observableMovies.addAll(textFilteredMovies);
-            }
-        });
-
-        sortObservableList();
+        searchBtn.setOnAction(this::prepareToFilter);
+        genreComboBox.setOnAction(this::prepareToFilter);
+        sortBtn.setOnAction(this::sortObservableList);
     }
 
-    private void clearObservableMovies() {
+    private void filterMoviesAccordingToState(String searchTerm, Genre selectedGenre) {
+        if(!isTextFieldActive && !isGenreFilterActive){
+            observableMovies.addAll(allMovies); return;
+        }
+        if(isTextFieldActive && !isGenreFilterActive){
+            observableMovies.addAll(Movie.filterMovies(searchTerm, allMovies)); return;
+        }
+        if (!isTextFieldActive){
+            observableMovies.addAll(Movie.filterMoviesByGenre(selectedGenre, allMovies)); return;
+        }
+        if (isTextFieldActive){
+            List<Movie> finalMovies = Movie.filterMoviesByGenre(selectedGenre, allMovies);
+            finalMovies= Movie.filterMovies(searchTerm, finalMovies);
+            observableMovies.addAll(finalMovies);
+        }
+    }
+
+    private void checkActiveFilters() {
+        isTextFieldActive= !searchField.getText().isBlank();
+        isGenreFilterActive = genreComboBox.getValue() != null && genreComboBox.getValue() != Genre.ALL;
+    }
+
+    private void sortObservableList(ActionEvent actionEvent) {
+        if (sortBtn.getText().equals("Sort (asc)")) {
+            Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle);
+            FXCollections.sort(observableMovies, titleComparator);
+            sortBtn.setText("Sort (desc)");
+        } else {
+            Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle).reversed();
+            FXCollections.sort(observableMovies, titleComparator);
+            sortBtn.setText("Sort (asc)");
+        }
+    }
+
+    private void prepareToFilter(ActionEvent actionEvent) {
+        String searchTerm = searchField.getText();
+        Genre selectedGenre = genreComboBox.getValue();
+
+        checkActiveFilters();
         observableMovies.clear();
-    }
 
-    private void sortObservableList() {
-        sortBtn.setOnAction(actionEvent -> {
-            if (sortBtn.getText().equals("Sort (asc)")) {
-                Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle);
-                FXCollections.sort(observableMovies, titleComparator);
-                sortBtn.setText("Sort (desc)");
-            } else {
-                Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle).reversed();
-                FXCollections.sort(observableMovies, titleComparator);
-                sortBtn.setText("Sort (asc)");
-            }
-        });
+        filterMoviesAccordingToState(searchTerm, selectedGenre);
     }
 }
