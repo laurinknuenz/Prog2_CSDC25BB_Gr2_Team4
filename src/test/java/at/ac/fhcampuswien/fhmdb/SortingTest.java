@@ -12,11 +12,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SortingTest {
 
     private List<Movie> movieList;
+    private Movie movieA = new Movie("Movie A", "Description A", Genre.ACTION);
+    private Movie movieB = new Movie("Movie B", "Description B", Genre.HORROR);
+    private Movie movieC = new Movie("Movie C", "Description C", Genre.MYSTERY);
+
     void createTestMovies() {
         movieList = new ArrayList<>();
-        movieList.add(new Movie("Movie A", "Description A", Genre.ACTION));
-        movieList.add(new Movie("Movie C", "Description C", Genre.HORROR));
-        movieList.add(new Movie("Movie B", "Description B", Genre.MYSTERY));
+        movieList.add(movieA);
+        movieList.add(movieC);
+        movieList.add(movieB);
     }
 
     @Test
@@ -46,9 +50,9 @@ public class SortingTest {
         //Act
         List<Movie> actual = Movie.sortMovies(movieList, true);
         //Assert
-        assertEquals("Movie A", actual.get(0).getTitle());
-        assertEquals("Movie B", actual.get(1).getTitle());
-        assertEquals("Movie C", actual.get(2).getTitle());
+        assertEquals(movieA, actual.get(0));
+        assertEquals(movieB, actual.get(1));
+        assertEquals(movieC, actual.get(2));
     }
 
     @Test
@@ -58,32 +62,34 @@ public class SortingTest {
         //Act
         List<Movie> actual = Movie.sortMovies(movieList, false);
         //Assert
-        assertEquals("Movie C", actual.get(0).getTitle());
-        assertEquals("Movie B", actual.get(1).getTitle());
-        assertEquals("Movie A", actual.get(2).getTitle());
+        assertEquals(movieC, actual.get(0));
+        assertEquals(movieB, actual.get(1));
+        assertEquals(movieA, actual.get(2));
     }
 
     @Test
     void movies_SortListWithSingleMovie_returnsListWithOnlyThisMovie() {
         //Arrange
         List<Movie> singleMovieList = new ArrayList<>();
-        singleMovieList.add(new Movie("Single Movie", "Movie Description", Genre.DOCUMENTARY));
+        Movie singleMovie = new Movie("Single Movie", "Movie Description", Genre.DOCUMENTARY);
+        singleMovieList.add(singleMovie);
         //Act
         List<Movie> actual = Movie.sortMovies(singleMovieList, true);
         //Assert
         assertEquals(1, actual.size());
-        assertEquals("Single Movie", actual.get(0).getTitle());
+        assertEquals(singleMovie, actual.get(0));
     }
 
     @Test
     void movies_SortListWithSingleMovieDescending_returnsListWithOnlyThisMovie() {
         //Arrange
         List<Movie> singleMovieList = new ArrayList<>();
-        singleMovieList.add(new Movie("Single Movie", "Movie Description", Genre.DOCUMENTARY));
+        Movie singleMovie = new Movie("Single Movie", "Movie Description", Genre.DOCUMENTARY);
+        singleMovieList.add(singleMovie);
         //Act
         List<Movie> actual = Movie.sortMovies(singleMovieList, false);
         //Assert
         assertEquals(1, actual.size());
-        assertEquals("Single Movie", actual.get(0).getTitle());
+        assertEquals(singleMovie, actual.get(0));
     }
 }
