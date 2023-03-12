@@ -14,7 +14,7 @@ class SingleFilterTest {
     @Test
     void testInitializeMovies() {
         List<Movie> movies = Movie.initializeMovies();
-        assertEquals(7, movies.size()); // expected number of movies
+        assertEquals(10, movies.size()); // expected number of movies
         assertNotNull(movies.get(0)); // first movie should not be null
         assertNotNull(movies.get(movies.size() - 1)); // last movie should not be null
     }
@@ -54,14 +54,26 @@ class SingleFilterTest {
         List<Movie> movies = Movie.initializeMovies();
 
         // ACT
-        List<Movie> filteredMovies = Movie.filterMoviesByGenre(Genre.HORROR, movies);
+        List<Movie> filteredMovies = Movie.filterMoviesByGenre(Genre.MUSICAL, movies);
 
         // Assert
         assertTrue(filteredMovies.isEmpty());
     }
 
     @Test
-    void movies_filterMoviesByGenres_returnsGenreMovies() {
+    void movies_filterMoviesByGenre_returnsCorrectNumberOfResults() {
+        // Arrange
+        List<Movie> movies = Movie.initializeMovies();
+
+        // ACT
+        List<Movie> filteredMovies = Movie.filterMoviesByGenre(Genre.ACTION, movies);
+
+        // Assert
+        assertEquals(filteredMovies.size(), 5);
+    }
+
+    @Test
+    void movies_filterMoviesByGenres_returnsFirstMovieContainingGenre() {
         // Arrange
         List<Movie> movies = Movie.initializeMovies();
 
@@ -69,13 +81,11 @@ class SingleFilterTest {
         List<Movie> filteredMovies = Movie.filterMoviesByGenre(Genre.DRAMA, movies);
 
         // Assert
-        for (Movie movie : filteredMovies) {
-            assertTrue(movie.getGenres().contains(Genre.DRAMA));
-        }
+        assertTrue(filteredMovies.get(0).getGenres().contains(Genre.DRAMA));
     }
 
     @Test
-    void movies_filterMovies_returnsEmptyList() {
+    void movies_filterMoviesWithNonExistingText_returnsEmptyList() {
         // Arrange
         List<Movie> movies = Movie.initializeMovies();
 
@@ -87,43 +97,48 @@ class SingleFilterTest {
     }
 
     @Test
-    void movies_filterByName_returnsMoviesFilteredByNameCaseInsensitive() {
+    void movies_filterMovies_returnsMoviesFilteredByNameCaseInsensitive() {
         // Arrange
         List<Movie> movies = Movie.initializeMovies();
 
         // ACT
-        List<Movie> filteredMovies = Movie.filterMovies("Taylor's car", movies);
+        List<Movie> filteredMovies = Movie.filterMovies("COOL RUNNINGS", movies);
 
         // Arrange
-        for (Movie movie : filteredMovies) {
-            assertTrue(movie.getTitle().toLowerCase().contains("taylor's car"));
-        }
+        assertTrue(filteredMovies.get(0).getTitle().contains("Cool Runnings"));
     }
 
     @Test
-    void movies_filterByDescription_returnsMoviesFilteredByDescription() {
+    void movies_filterByDescription_returnsMoviesFilteredByDescription0() {
         List<Movie> movies = Movie.initializeMovies();
+
         List<Movie> filteredMovies = Movie.filterMovies("some film about christmas", movies);
-        for (Movie movie : filteredMovies) {
-            assertTrue(movie.getDescription().toLowerCase().contains("some film about christmas"));
-        }
+
+        assertTrue(filteredMovies.isEmpty());
     }
 
     @Test
-    void testFilterMoviesCaseInsensitive() {
+    void movies_filterByDescription_returnsMoviesFilteredByDescription1() {
+        // Arrange
         List<Movie> movies = Movie.initializeMovies();
-        List<Movie> filteredMovies = Movie.filterMovies("Cats", movies);
-        for (Movie movie : filteredMovies) {
-            assertTrue(movie.getTitle().toLowerCase().contains("cats") || movie.getDescription().toLowerCase().contains("cats"));
-        }
+
+        // Act
+        List<Movie> filteredMovies = Movie.filterMovies("nemo", movies);
+
+        // Assert
+        assertTrue(filteredMovies.size() >= 1);
+        assertTrue(filteredMovies.get(0).getTitle().toLowerCase().contains("nemo") || filteredMovies.get(0).getDescription().toLowerCase().contains("nemo"));
     }
 
     @Test
     void movies_filterMoviesByTitleAndDescription_returnsCorrectValues() {
+        // Arrange
         List<Movie> movies = Movie.initializeMovies();
+
+        // Act
         List<Movie> filteredMovies = Movie.filterMovies("drama", movies);
-        for (Movie movie : filteredMovies) {
-            assertTrue(movie.getTitle().toLowerCase().contains("drama") || movie.getDescription().toLowerCase().contains("drama"));
-        }
+
+        // Assert
+        assertTrue(filteredMovies.isEmpty());
     }
 }
