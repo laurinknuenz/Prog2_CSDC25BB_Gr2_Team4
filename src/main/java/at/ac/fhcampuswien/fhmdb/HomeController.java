@@ -30,13 +30,13 @@ public class HomeController implements Initializable {
     @FXML
     public JFXButton sortBtn;
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
-    public List<Movie> allMovies = Movie.initializeMovies();
+    public List<Movie> allMovies;
     private static boolean isTextFieldActive;
     private static boolean isGenreFilterActive;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Movie.initializeMovies();
+        allMovies= Movie.initializeMovies();
         observableMovies.addAll(allMovies);
         // initialize UI stuff
         movieListView.setItems(observableMovies);
