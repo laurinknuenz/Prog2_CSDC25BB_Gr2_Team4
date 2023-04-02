@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class HomeController implements Initializable {
     @FXML
@@ -51,20 +52,17 @@ public class HomeController implements Initializable {
     }
 
     private void filterMoviesAccordingToState(String searchTerm, Genre selectedGenre) {
-        if(!isTextFieldActive && !isGenreFilterActive){
-            observableMovies.addAll(allMovies); return;
+        if (!isTextFieldActive && !isGenreFilterActive) {
+            observableMovies.addAll(allMovies);
+            return;
         }
-        if(isTextFieldActive && !isGenreFilterActive){
-            observableMovies.addAll(Movie.filterMovies(searchTerm, allMovies)); return;
-        }
-        if (!isTextFieldActive){
-            observableMovies.addAll(Movie.filterMoviesByGenre(selectedGenre, allMovies)); return;
-        }
-        if (isTextFieldActive){
-            List<Movie> finalMovies = Movie.filterMoviesByGenre(selectedGenre, allMovies);
-            finalMovies= Movie.filterMovies(searchTerm, finalMovies);
-            observableMovies.addAll(finalMovies);
-        }
+
+        List<Movie> filteredMovies = allMovies.stream()
+                .filter(movie -> isTextFieldActive ? movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase()) : true)
+                .filter(movie -> isGenreFilterActive ? movie.getGenres().contains(selectedGenre) : true)
+                .collect(Collectors.toList());
+
+        observableMovies.addAll(filteredMovies);
     }
 
     private void checkActiveFilters() {
