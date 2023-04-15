@@ -16,6 +16,12 @@ public class Movie {
         this.genres = List.of(genres);
     }
 
+    public Movie(String title, String description, List<Genre> genres) {
+        this.title = title;
+        this.description = description;
+        this.genres = genres;
+    }
+
     public String getTitle() {
         return title;
     }
