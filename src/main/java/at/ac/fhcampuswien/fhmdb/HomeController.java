@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.data.MovieRepository;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
@@ -21,22 +22,33 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class HomeController implements Initializable {
-    @FXML public JFXButton searchBtn;
-    @FXML public TextField searchField;
-    @FXML public JFXListView movieListView;
-    @FXML public JFXComboBox<Genre> genreComboBox;
-    @FXML public JFXComboBox<Integer> releaseYear;
-    @FXML public JFXComboBox<String> rating;
-    @FXML public JFXButton sortBtn;
+    @FXML
+    public JFXButton searchBtn;
+    @FXML
+    public TextField searchField;
+    @FXML
+    public JFXListView movieListView;
+    @FXML
+    public JFXComboBox<Genre> genreComboBox;
+    @FXML
+    public JFXComboBox<Integer> releaseYear;
+    @FXML
+    public JFXComboBox<String> rating;
+    @FXML
+    public JFXButton sortBtn;
+
+    private final MovieRepository repository = new MovieRepository();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
-    public List<Movie> allMovies;
+
     private static boolean isTextFieldActive;
     private static boolean isGenreFilterActive;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        allMovies= Movie.initializeMovies();
-        observableMovies.addAll(allMovies);
+        //allMovies = Movie.initializeMovies();
+        repository.addAll(Movie.initializeMovies());
+        observableMovies.addAll(repository.getAll());
+
         // initialize UI stuff
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());
@@ -48,25 +60,6 @@ public class HomeController implements Initializable {
         searchBtn.setOnAction(this::prepareToFilter);
         genreComboBox.setOnAction(this::prepareToFilter);
         sortBtn.setOnAction(this::sortObservableList);
-    }
-
-    private void filterMoviesAccordingToState(String searchTerm, Genre selectedGenre) {
-        if (!isTextFieldActive && !isGenreFilterActive) {
-            observableMovies.addAll(allMovies);
-            return;
-        }
-
-        List<Movie> filteredMovies = allMovies.stream()
-                .filter(movie -> isTextFieldActive ? movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase()) : true)
-                .filter(movie -> isGenreFilterActive ? movie.getGenres().contains(selectedGenre) : true)
-                .collect(Collectors.toList());
-
-        observableMovies.addAll(filteredMovies);
-    }
-
-    private void checkActiveFilters() {
-        isTextFieldActive= !searchField.getText().isBlank();
-        isGenreFilterActive = genreComboBox.getValue() != null && genreComboBox.getValue() != Genre.ALL;
     }
 
     private void sortObservableList(ActionEvent actionEvent) {
@@ -83,13 +76,32 @@ public class HomeController implements Initializable {
     }
 
     private void prepareToFilter(ActionEvent actionEvent) {
-        String searchTerm = searchField.getText();
-        Genre selectedGenre = genreComboBox.getValue();
-
         checkActiveFilters();
         observableMovies.clear();
 
-        filterMoviesAccordingToState(searchTerm, selectedGenre);
+        filterMoviesAccordingToState();
+    }
+
+    private void checkActiveFilters() {
+        isTextFieldActive = !searchField.getText().isBlank();
+        isGenreFilterActive = genreComboBox.getValue() != null && genreComboBox.getValue() != Genre.ALL;
+    }
+
+    private void filterMoviesAccordingToState() {
+        String searchTerm = searchField.getText();
+        Genre selectedGenre = genreComboBox.getValue();
+
+        if (!isTextFieldActive && !isGenreFilterActive) {
+            observableMovies.addAll(repository.getAll());
+            return;
+        }
+
+        List<Movie> filteredMovies = repository.getAll().stream()
+                .filter(movie -> isTextFieldActive ? movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase()) : true)
+                .filter(movie -> isGenreFilterActive ? movie.getGenres().contains(selectedGenre) : true)
+                .collect(Collectors.toList());
+
+        observableMovies.addAll(filteredMovies);
     }
 
     private void setUpGenreComboBox() {
