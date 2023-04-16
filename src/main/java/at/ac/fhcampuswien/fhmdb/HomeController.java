@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class HomeController implements Initializable {
     @FXML
@@ -28,7 +28,7 @@ public class HomeController implements Initializable {
     @FXML
     public TextField searchField;
     @FXML
-    public JFXListView movieListView;
+    public JFXListView<Movie> movieListView;
     @FXML
     public JFXComboBox<Genre> genreComboBox;
     @FXML
@@ -39,27 +39,21 @@ public class HomeController implements Initializable {
     public JFXButton sortBtn;
 
     private final MovieRepository repository = new MovieRepository();
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
-
-    private static boolean isTextFieldActive;
-    private static boolean isGenreFilterActive;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //allMovies = Movie.initializeMovies();
         repository.addAll(Movie.initializeMovies());
-        observableMovies.addAll(repository.getAll());
 
         // initialize UI stuff
-        movieListView.setItems(observableMovies);
+        movieListView.setItems(FXCollections.observableList(repository.getAll()));
         movieListView.setCellFactory(movieListView -> new MovieCell());
 
         setUpGenreComboBox();
         setUpReleaseYearComboBox();
         setupRatingComboBox();
 
-        searchBtn.setOnAction(this::prepareToFilter);
-        genreComboBox.setOnAction(this::prepareToFilter);
+        searchBtn.setOnAction(actionEvent -> filterMoviesAccordingToState());
+        genreComboBox.setOnAction(actionEvent -> filterMoviesAccordingToState());
         sortBtn.setOnAction(this::sortObservableList);
     }
 
@@ -69,33 +63,24 @@ public class HomeController implements Initializable {
         sortBtn.setText(isAscendingOrder ? "Sort (desc)" : "Sort (asc)");
     }
 
-    private void prepareToFilter(ActionEvent actionEvent) {
-        checkActiveFilters();
-        observableMovies.clear();
-
-        filterMoviesAccordingToState();
-    }
-
-    private void checkActiveFilters() {
-        isTextFieldActive = !searchField.getText().isBlank();
-        isGenreFilterActive = genreComboBox.getValue() != null && genreComboBox.getValue() != Genre.ALL;
-    }
-
     private void filterMoviesAccordingToState() {
-        String searchTerm = searchField.getText();
-        Genre selectedGenre = genreComboBox.getValue();
+        Stream<Movie> moviesToSet = repository.getAll().stream();
 
-        if (!isTextFieldActive && !isGenreFilterActive) {
-            observableMovies.addAll(repository.getAll());
-            return;
+        String searchTerm = searchField.getText();
+        if (!searchTerm.isBlank()) {
+            moviesToSet = moviesToSet.filter(movie -> movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase()));
         }
 
-        List<Movie> filteredMovies = repository.getAll().stream()
-                .filter(movie -> isTextFieldActive ? movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase()) : true)
-                .filter(movie -> isGenreFilterActive ? movie.getGenres().contains(selectedGenre) : true)
-                .collect(Collectors.toList());
+        Genre selectedGenre = genreComboBox.getValue();
+        if (isGenreFilterActive(selectedGenre)) {
+            moviesToSet = moviesToSet.filter(movie -> movie.getGenres().contains(selectedGenre));
+        }
 
-        observableMovies.addAll(filteredMovies);
+        movieListView.setItems(FXCollections.observableList(moviesToSet.toList()));
+    }
+
+    private boolean isGenreFilterActive(Genre selectedGenre) {
+        return selectedGenre != null && selectedGenre != Genre.ALL;
     }
 
     private void setUpGenreComboBox() {
@@ -117,17 +102,13 @@ public class HomeController implements Initializable {
     }
 
     private void sortMoviesByOrder(final boolean ascending) {
-        List<Movie> moviesToSort = new ArrayList<>(observableMovies);
-
-        Comparator<Movie> titleComparator;
-        if (ascending) {
-            titleComparator = Comparator.comparing(Movie::getTitle);
-        } else {
-            titleComparator = Comparator.comparing(Movie::getTitle).reversed();
+        Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle);
+        if (!ascending) {
+            titleComparator = titleComparator.reversed();
         }
 
+        List<Movie> moviesToSort = new ArrayList<>(movieListView.getItems());
         moviesToSort.sort(titleComparator);
-        observableMovies.clear();
-        observableMovies.addAll(moviesToSort);
+        movieListView.setItems(FXCollections.observableList(moviesToSort));
     }
 }
