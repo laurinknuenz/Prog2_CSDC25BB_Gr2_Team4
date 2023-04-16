@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -63,16 +64,9 @@ public class HomeController implements Initializable {
     }
 
     private void sortObservableList(ActionEvent actionEvent) {
-        List<Movie> moviesToSort = new ArrayList<>(observableMovies);
-        observableMovies.clear();
-
-        if (sortBtn.getText().equals("Sort (asc)")) {
-            observableMovies.addAll(Movie.sortMoviesByOrder(moviesToSort, true));
-            sortBtn.setText("Sort (desc)");
-        } else {
-            observableMovies.addAll(Movie.sortMoviesByOrder(moviesToSort, false));
-            sortBtn.setText("Sort (asc)");
-        }
+        boolean isAscendingOrder = sortBtn.getText().equals("Sort (asc)");
+        sortMoviesByOrder(isAscendingOrder);
+        sortBtn.setText(isAscendingOrder ? "Sort (desc)" : "Sort (asc)");
     }
 
     private void prepareToFilter(ActionEvent actionEvent) {
@@ -120,5 +114,20 @@ public class HomeController implements Initializable {
         List<Integer> ratings = IntStream.rangeClosed(0, 10).boxed().toList();
         List<String> ratingStrings = ratings.stream().map(rating -> String.format("%.1f", rating.doubleValue())).toList();
         rating.getItems().addAll(ratingStrings);
+    }
+
+    private void sortMoviesByOrder(final boolean ascending) {
+        List<Movie> moviesToSort = new ArrayList<>(observableMovies);
+
+        Comparator<Movie> titleComparator;
+        if (ascending) {
+            titleComparator = Comparator.comparing(Movie::getTitle);
+        } else {
+            titleComparator = Comparator.comparing(Movie::getTitle).reversed();
+        }
+
+        moviesToSort.sort(titleComparator);
+        observableMovies.clear();
+        observableMovies.addAll(moviesToSort);
     }
 }
