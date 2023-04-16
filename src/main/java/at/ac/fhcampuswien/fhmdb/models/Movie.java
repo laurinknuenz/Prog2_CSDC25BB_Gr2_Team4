@@ -1,50 +1,100 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Movie {
+    private String id;
     private String title;
-    private String description;
-
     private List<Genre> genres;
+    private Integer releaseYear;
+    private String description;
+    private List<String> directors;
+    private List<String> writers;
+    private List<String> mainCast;
+    private Double rating;
 
-    public Movie(String title, String description, Genre... genres) {
-        this.title = title;
-        this.description = description;
-        this.genres = List.of(genres);
+    public String getId() {
+        return id;
     }
 
-    public Movie(String title, String description, List<Genre> genres) {
-        this.title = title;
-        this.description = description;
-        this.genres = genres;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getDescription() {
-        return description;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<Genre> getGenres() {
         return genres;
     }
 
-    public static List<Movie> initializeMovies() {
-        List<Movie> movies = new ArrayList<>();
-        movies.add(new Movie("The Incredibles", "A family of superheroes must come out of retirement to save the world from a vengeful former fan.", Genre.FAMILY, Genre.ACTION, Genre.ANIMATION));
-        movies.add(new Movie("Finding Nemo", "A clownfish named Marlin searches for his son Nemo after he is captured by a diver and taken to an aquarium in a dentist's office.", Genre.FAMILY, Genre.ANIMATION));
-        movies.add(new Movie("Star Wars: Episode 1", "The story of young Anakin Skywalker's journey as a slave boy, his discovery by the Jedi, and the rise of the Sith threat", Genre.SCIENCE_FICTION, Genre.WAR));
-        movies.add(new Movie("Transformers 3", "Autobots and Decepticons battle for a Cybertronian spacecraft on the moon.", Genre.ACTION, Genre.ROMANCE, Genre.ADVENTURE));
-        movies.add(new Movie("Encanto", "A movie about a magical Colombian family, where the youngest member,must save the family's enchanted house.", Genre.ANIMATION, Genre.DRAMA, Genre.FANTASY));
-        movies.add(new Movie("The Matrix", "A hacker discovers that reality is a simulation created by  machines, and joins a rebellion to fight.", Genre.ACTION, Genre.THRILLER, Genre.MYSTERY));
-        movies.add(new Movie("The Fast and The Furious", "A group of street racers and their allies who engage in heists and various missions involving high-speed car chases.", Genre.DRAMA, Genre.ACTION, Genre.CRIME));
-        movies.add(new Movie("Cool Runnings", "A Jamaican bobsled team's underdog journey to compete in the Winter Olympics.", Genre.BIOGRAPHY, Genre.DOCUMENTARY, Genre.SPORT));
-        movies.add(new Movie("Django Unchained", "Freed slave Django partners with a bounty hunter to rescue his wife from a cruel plantation owner.", Genre.ACTION, Genre.HISTORY, Genre.WESTERN));
-        movies.add(new Movie("Paranormal Activity", "A couple sets up cameras to document strange occurrences in their house, which escalate into terrifying supernatural events.", Genre.THRILLER, Genre.HORROR, Genre.MYSTERY));
-        return movies;
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public Integer getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(Integer releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<String> getDirectors() {
+        return directors;
+    }
+
+    public void setDirectors(List<String> directors) {
+        this.directors = directors;
+    }
+
+    public List<String> getWriters() {
+        return writers;
+    }
+
+    public void setWriters(List<String> writers) {
+        this.writers = writers;
+    }
+
+    public List<String> getMainCast() {
+        return mainCast;
+    }
+
+    public void setMainCast(List<String> mainCast) {
+        this.mainCast = mainCast;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Movie movie)) return false;
+        return Objects.equals(id, movie.id) && Objects.equals(title, movie.title) && Objects.equals(genres, movie.genres) && Objects.equals(releaseYear, movie.releaseYear) && Objects.equals(description, movie.description) && Objects.equals(directors, movie.directors) && Objects.equals(writers, movie.writers) && Objects.equals(mainCast, movie.mainCast) && Objects.equals(rating, movie.rating);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, genres, releaseYear, description, directors, writers, mainCast, rating);
     }
 }

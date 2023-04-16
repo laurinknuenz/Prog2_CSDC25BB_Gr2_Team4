@@ -7,7 +7,8 @@ module at.ac.fhcampuswien.fhmdb {
     requires com.jfoenix;
     requires annotations;
 
+    // opens model package to gson.. overrides java 17 restrictions
     opens at.ac.fhcampuswien.fhmdb to javafx.fxml;
     exports at.ac.fhcampuswien.fhmdb;
-    exports at.ac.fhcampuswien.fhmdb.models;
+    opens at.ac.fhcampuswien.fhmdb.models;
 }

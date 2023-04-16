@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.api.ApiConsumer;
 import at.ac.fhcampuswien.fhmdb.data.MovieRepository;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -8,7 +9,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,10 +39,11 @@ public class HomeController implements Initializable {
     public JFXButton sortBtn;
 
     private final MovieRepository repository = new MovieRepository();
+    private final ApiConsumer apiConsumer = new ApiConsumer();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        repository.addAll(Movie.initializeMovies());
+        repository.addAll(apiConsumer.getAllMovies());
 
         // initialize UI stuff
         movieListView.setItems(FXCollections.observableList(repository.getAll()));
