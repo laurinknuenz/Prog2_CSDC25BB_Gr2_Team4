@@ -4,13 +4,17 @@ import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class ApiConsumer {
     private static final String API = "https://prog2.fh-campuswien.ac.at/movies";
@@ -25,13 +29,28 @@ public class ApiConsumer {
             .setVersion(1.0)
             .create();
 
-    public Collection<Movie> getAllMovies() {
-        Request request = new Request.Builder()
-                .url(API)
+    public List<Movie> getAllMovies() {
+        return getMovies(Map.of());
+    }
+
+    public List<Movie> getMovies(final Map<String, String> queryParams) {
+        var urlBuilder = new HttpUrl.Builder()
+                .scheme("https")
+                .host("prog2.fh-campuswien.ac.at")
+                .addPathSegment("movies");
+
+        queryParams.forEach(urlBuilder::addQueryParameter);
+
+        var request = new Request.Builder()
+                .url(urlBuilder.build())
                 .header("User-Agent", "ok-http-agent-v4.10.0")
                 .method("GET", null)
                 .build();
 
+        return queryMoviesFromApi(request);
+    }
+
+    private List<Movie> queryMoviesFromApi(Request request) {
         try (Response response = HTTP_CLIENT.newCall(request).execute()) {
             Movie[] movies = GSON.fromJson(response.body().charStream(), Movie[].class);
             return Arrays.asList(movies);

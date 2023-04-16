@@ -1,7 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.api.ApiConsumer;
-import at.ac.fhcampuswien.fhmdb.data.MovieRepository;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
@@ -15,12 +14,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class HomeController implements Initializable {
     @FXML
@@ -38,23 +34,22 @@ public class HomeController implements Initializable {
     @FXML
     public JFXButton sortBtn;
 
-    private final MovieRepository repository = new MovieRepository();
     private final ApiConsumer apiConsumer = new ApiConsumer();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        repository.addAll(apiConsumer.getAllMovies());
-
         // initialize UI stuff
-        movieListView.setItems(FXCollections.observableList(repository.getAll()));
+        movieListView.setItems(FXCollections.observableList(apiConsumer.getAllMovies()));
         movieListView.setCellFactory(movieListView -> new MovieCell());
 
         setUpGenreComboBox();
         setUpReleaseYearComboBox();
         setupRatingComboBox();
 
-        searchBtn.setOnAction(actionEvent -> filterMoviesAccordingToState());
-        genreComboBox.setOnAction(actionEvent -> filterMoviesAccordingToState());
+        searchBtn.setOnAction(actionEvent -> onSearchParametersUpdated());
+        genreComboBox.setOnAction(actionEvent -> onSearchParametersUpdated());
+        rating.setOnAction(actionEvent -> onSearchParametersUpdated());
+        releaseYear.setOnAction(actionEvent -> onSearchParametersUpdated());
         sortBtn.setOnAction(this::sortObservableList);
     }
 
@@ -64,24 +59,31 @@ public class HomeController implements Initializable {
         sortBtn.setText(isAscendingOrder ? "Sort (desc)" : "Sort (asc)");
     }
 
-    private void filterMoviesAccordingToState() {
-        Stream<Movie> moviesToSet = repository.getAll().stream();
+    private void onSearchParametersUpdated() {
+        Map<String, String> parametersMap = new HashMap<>();
 
-        String searchTerm = searchField.getText();
-        if (!searchTerm.isBlank()) {
-            moviesToSet = moviesToSet.filter(movie -> movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase()));
+        String searchFieldText = searchField.getText();
+        if (searchFieldText != null && !searchFieldText.isBlank()) {
+            parametersMap.put("query", searchFieldText);
         }
 
-        Genre selectedGenre = genreComboBox.getValue();
-        if (isGenreFilterActive(selectedGenre)) {
-            moviesToSet = moviesToSet.filter(movie -> movie.getGenres().contains(selectedGenre));
+        Genre genre = genreComboBox.getValue();
+        if (genre != null && genre != Genre.ALL) {
+            parametersMap.put("genre", genre.name());
         }
 
-        movieListView.setItems(FXCollections.observableList(moviesToSet.toList()));
-    }
+        Integer releaseYearValue = releaseYear.getValue();
+        if (releaseYearValue != null) {
+            parametersMap.put("releaseYear", releaseYearValue.toString());
+        }
 
-    private boolean isGenreFilterActive(Genre selectedGenre) {
-        return selectedGenre != null && selectedGenre != Genre.ALL;
+        String ratingValue = rating.getValue();
+        if (ratingValue != null && !ratingValue.isBlank()) {
+            parametersMap.put("ratingFrom", ratingValue);
+        }
+
+        List<Movie> movies = apiConsumer.getMovies(parametersMap);
+        movieListView.setItems(FXCollections.observableList(movies));
     }
 
     private void setUpGenreComboBox() {
@@ -91,7 +93,7 @@ public class HomeController implements Initializable {
 
     private void setUpReleaseYearComboBox() {
         releaseYear.setPromptText("Filter by release year");
-        List<Integer> generatedReleaseYears = IntStream.rangeClosed(1900, 2023).boxed().toList();
+        List<Integer> generatedReleaseYears = movieListView.getItems().stream().map(Movie::getReleaseYear).sorted().distinct().toList();
         releaseYear.getItems().addAll(generatedReleaseYears);
     }
 
