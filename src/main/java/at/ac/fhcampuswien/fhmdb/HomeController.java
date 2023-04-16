@@ -22,6 +22,8 @@ public class HomeController implements Initializable {
     @FXML
     public JFXButton searchBtn;
     @FXML
+    public JFXButton resetBtn;
+    @FXML
     public TextField searchField;
     @FXML
     public JFXListView<Movie> movieListView;
@@ -51,6 +53,8 @@ public class HomeController implements Initializable {
         rating.setOnAction(actionEvent -> onSearchParametersUpdated());
         releaseYear.setOnAction(actionEvent -> onSearchParametersUpdated());
         sortBtn.setOnAction(this::sortObservableList);
+
+        resetBtn.setOnAction(actionEvent -> OnResetButton());
     }
 
     private void sortObservableList(ActionEvent actionEvent) {
@@ -113,5 +117,13 @@ public class HomeController implements Initializable {
         List<Movie> moviesToSort = new ArrayList<>(movieListView.getItems());
         moviesToSort.sort(titleComparator);
         movieListView.setItems(FXCollections.observableList(moviesToSort));
+    }
+
+    private void OnResetButton() {
+        searchField.setText("");
+        genreComboBox.setValue(null);
+        rating.setValue(null);
+        releaseYear.setValue(null);
+        List<Movie> movies = apiConsumer.getAllMovies();
     }
 }
