@@ -59,7 +59,7 @@ public class Movie {
         return filteredMovies;
     }
 
-    public static List<Movie> filterMovies(String searchTerm, List<Movie> movies) {
+    public static List<Movie> filterMoviesByText(String searchTerm, List<Movie> movies) {
         List<Movie> filteredMovies = new ArrayList<>();
         for (Movie movie : movies) {
             if (movie.getTitle().toLowerCase().contains(searchTerm.toLowerCase()) || movie.getDescription().toLowerCase().contains(searchTerm.toLowerCase())) {
@@ -69,7 +69,7 @@ public class Movie {
         return filteredMovies;
     }
 
-    public static List<Movie> sortMovies(List<Movie> movies, boolean ascending){
+    public static List<Movie> sortMoviesByOrder(List<Movie> movies, boolean ascending){
         Comparator<Movie> titleComparator;
         if(ascending){
             titleComparator = Comparator.comparing(Movie::getTitle);

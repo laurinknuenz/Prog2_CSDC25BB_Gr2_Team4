@@ -18,18 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class HomeController implements Initializable {
-    @FXML
-    public JFXButton searchBtn;
-    @FXML
-    public TextField searchField;
-    @FXML
-    public JFXListView movieListView;
-    @FXML
-    public JFXComboBox<Genre> genreComboBox;
-    @FXML
-    public JFXButton sortBtn;
+    @FXML public JFXButton searchBtn;
+    @FXML public TextField searchField;
+    @FXML public JFXListView movieListView;
+    @FXML public JFXComboBox<Genre> genreComboBox;
+    @FXML public JFXComboBox<Integer> releaseYear;
+    @FXML public JFXComboBox<String> rating;
+    @FXML public JFXButton sortBtn;
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     public List<Movie> allMovies;
     private static boolean isTextFieldActive;
@@ -43,8 +41,9 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(movieListView -> new MovieCell());
 
-        genreComboBox.getItems().addAll(Genre.values());
-        genreComboBox.setPromptText("Filter by Genre");
+        setUpGenreComboBox();
+        setUpReleaseYearComboBox();
+        setupRatingComboBox();
 
         searchBtn.setOnAction(this::prepareToFilter);
         genreComboBox.setOnAction(this::prepareToFilter);
@@ -75,10 +74,10 @@ public class HomeController implements Initializable {
         observableMovies.clear();
 
         if (sortBtn.getText().equals("Sort (asc)")) {
-            observableMovies.addAll(Movie.sortMovies(moviesToSort, true));
+            observableMovies.addAll(Movie.sortMoviesByOrder(moviesToSort, true));
             sortBtn.setText("Sort (desc)");
         } else {
-            observableMovies.addAll(Movie.sortMovies(moviesToSort, false));
+            observableMovies.addAll(Movie.sortMoviesByOrder(moviesToSort, false));
             sortBtn.setText("Sort (asc)");
         }
     }
@@ -91,5 +90,23 @@ public class HomeController implements Initializable {
         observableMovies.clear();
 
         filterMoviesAccordingToState(searchTerm, selectedGenre);
+    }
+
+    private void setUpGenreComboBox() {
+        genreComboBox.setPromptText("Filter by Genre");
+        genreComboBox.getItems().addAll(Genre.values());
+    }
+
+    private void setUpReleaseYearComboBox() {
+        releaseYear.setPromptText("Filter by release year");
+        List<Integer> generatedReleaseYears = IntStream.rangeClosed(1900, 2023).boxed().toList();
+        releaseYear.getItems().addAll(generatedReleaseYears);
+    }
+
+    private void setupRatingComboBox() {
+        rating.setPromptText("Filter by min rating");
+        List<Integer> ratings = IntStream.rangeClosed(0, 10).boxed().toList();
+        List<String> ratingStrings = ratings.stream().map(rating -> String.format("%.1f", rating.doubleValue())).toList();
+        rating.getItems().addAll(ratingStrings);
     }
 }

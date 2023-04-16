@@ -28,7 +28,7 @@ public class SortingTest {
         //Arrange
         List<Movie> emptyMovieList = new ArrayList<>();
         //Act
-        List<Movie> actual = Movie.sortMovies(emptyMovieList, true);
+        List<Movie> actual = Movie.sortMoviesByOrder(emptyMovieList, true);
         //Assert
         assertEquals(0, actual.size());
     }
@@ -38,7 +38,7 @@ public class SortingTest {
         //Arrange
         List<Movie> emptyMovieList = new ArrayList<>();
         //Act
-        List<Movie> actual = Movie.sortMovies(emptyMovieList, false);
+        List<Movie> actual = Movie.sortMoviesByOrder(emptyMovieList, false);
         //Assert
         assertEquals(0, actual.size());
     }
@@ -48,7 +48,7 @@ public class SortingTest {
         //Arrange
         createTestMovies();
         //Act
-        List<Movie> actual = Movie.sortMovies(movieList, true);
+        List<Movie> actual = Movie.sortMoviesByOrder(movieList, true);
         //Assert
         assertEquals(movieA, actual.get(0));
         assertEquals(movieB, actual.get(1));
@@ -60,7 +60,7 @@ public class SortingTest {
         //Arrange
         createTestMovies();
         //Act
-        List<Movie> actual = Movie.sortMovies(movieList, false);
+        List<Movie> actual = Movie.sortMoviesByOrder(movieList, false);
         //Assert
         assertEquals(movieC, actual.get(0));
         assertEquals(movieB, actual.get(1));
@@ -74,7 +74,7 @@ public class SortingTest {
         Movie singleMovie = new Movie("Single Movie", "Movie Description", Genre.DOCUMENTARY);
         singleMovieList.add(singleMovie);
         //Act
-        List<Movie> actual = Movie.sortMovies(singleMovieList, true);
+        List<Movie> actual = Movie.sortMoviesByOrder(singleMovieList, true);
         //Assert
         assertEquals(1, actual.size());
         assertEquals(singleMovie, actual.get(0));
@@ -87,7 +87,7 @@ public class SortingTest {
         Movie singleMovie = new Movie("Single Movie", "Movie Description", Genre.DOCUMENTARY);
         singleMovieList.add(singleMovie);
         //Act
-        List<Movie> actual = Movie.sortMovies(singleMovieList, false);
+        List<Movie> actual = Movie.sortMoviesByOrder(singleMovieList, false);
         //Assert
         assertEquals(1, actual.size());
         assertEquals(singleMovie, actual.get(0));

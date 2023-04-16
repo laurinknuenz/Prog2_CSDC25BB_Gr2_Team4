@@ -17,7 +17,7 @@ public class DoubleFilterTest {
 
         // Act
         List<Movie> finalMovies = Movie.filterMoviesByGenre(selectedGenre, movies);
-        finalMovies= Movie.filterMovies(searchTerm, finalMovies);
+        finalMovies= Movie.filterMoviesByText(searchTerm, finalMovies);
 
         // Assert
         assertTrue(finalMovies.size() > 0);
@@ -32,7 +32,7 @@ public class DoubleFilterTest {
 
         // Act
         List<Movie> finalMovies = Movie.filterMoviesByGenre(selectedGenre, movies);
-        finalMovies= Movie.filterMovies(searchTerm, finalMovies);
+        finalMovies= Movie.filterMoviesByText(searchTerm, finalMovies);
 
         // Assert
         assertTrue(finalMovies.isEmpty());
@@ -46,7 +46,7 @@ public class DoubleFilterTest {
         List<Movie> movies = Movie.initializeMovies();
 
         // Act
-        List<Movie> finalMovies= Movie.filterMovies(searchTerm, movies);
+        List<Movie> finalMovies= Movie.filterMoviesByText(searchTerm, movies);
         finalMovies = Movie.filterMoviesByGenre(selectedGenre, finalMovies);
 
         // Assert
@@ -62,7 +62,7 @@ public class DoubleFilterTest {
 
         // Act
         List<Movie> finalMovies = Movie.filterMoviesByGenre(selectedGenre, movies);
-        finalMovies= Movie.filterMovies(searchTerm, finalMovies);
+        finalMovies= Movie.filterMoviesByText(searchTerm, finalMovies);
 
         // Assert
         assertTrue(finalMovies.size() == 1);
@@ -76,7 +76,7 @@ public class DoubleFilterTest {
         List<Movie> movies = Movie.initializeMovies();
 
         // Act
-        List<Movie> finalMovies= Movie.filterMovies(searchTerm, movies);
+        List<Movie> finalMovies= Movie.filterMoviesByText(searchTerm, movies);
         finalMovies = Movie.filterMoviesByGenre(selectedGenre, finalMovies);
 
         // Assert

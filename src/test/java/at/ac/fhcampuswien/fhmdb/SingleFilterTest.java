@@ -90,7 +90,7 @@ class SingleFilterTest {
         List<Movie> movies = Movie.initializeMovies();
 
         // ACT
-        List<Movie> filteredMovies = Movie.filterMovies("Non existing movie title or description", movies);
+        List<Movie> filteredMovies = Movie.filterMoviesByText("Non existing movie title or description", movies);
 
         // Assert
         assertTrue(filteredMovies.isEmpty());
@@ -102,7 +102,7 @@ class SingleFilterTest {
         List<Movie> movies = Movie.initializeMovies();
 
         // ACT
-        List<Movie> filteredMovies = Movie.filterMovies("COOL RUNNINGS", movies);
+        List<Movie> filteredMovies = Movie.filterMoviesByText("COOL RUNNINGS", movies);
 
         // Arrange
         assertTrue(filteredMovies.get(0).getTitle().contains("Cool Runnings"));
@@ -112,7 +112,7 @@ class SingleFilterTest {
     void movies_filterByDescription_returnsMoviesFilteredByDescription0() {
         List<Movie> movies = Movie.initializeMovies();
 
-        List<Movie> filteredMovies = Movie.filterMovies("some film about christmas", movies);
+        List<Movie> filteredMovies = Movie.filterMoviesByText("some film about christmas", movies);
 
         assertTrue(filteredMovies.isEmpty());
     }
@@ -123,7 +123,7 @@ class SingleFilterTest {
         List<Movie> movies = Movie.initializeMovies();
 
         // Act
-        List<Movie> filteredMovies = Movie.filterMovies("nemo", movies);
+        List<Movie> filteredMovies = Movie.filterMoviesByText("nemo", movies);
 
         // Assert
         assertTrue(filteredMovies.size() >= 1);
@@ -136,7 +136,7 @@ class SingleFilterTest {
         List<Movie> movies = Movie.initializeMovies();
 
         // Act
-        List<Movie> filteredMovies = Movie.filterMovies("drama", movies);
+        List<Movie> filteredMovies = Movie.filterMoviesByText("drama", movies);
 
         // Assert
         assertTrue(filteredMovies.isEmpty());
