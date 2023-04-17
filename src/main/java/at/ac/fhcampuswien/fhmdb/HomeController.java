@@ -104,7 +104,7 @@ public class HomeController implements Initializable {
     private void setupRatingComboBox() {
         rating.setPromptText("Filter by min rating");
         List<Integer> ratings = IntStream.rangeClosed(0, 10).boxed().toList();
-        List<String> ratingStrings = ratings.stream().map(rating -> String.format("%.1f", rating.doubleValue())).toList();
+        List<String> ratingStrings = ratings.stream().map(rating -> String.format(Locale.US, "%.1f", rating.doubleValue())).toList();
         rating.getItems().addAll(ratingStrings);
     }
 
