@@ -9,10 +9,15 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import java.util.stream.Collectors;
+
 public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label detail = new Label();
-    private final VBox layout = new VBox(title, detail);
+    private final Label rating = new Label();
+    private final Label actors = new Label();
+
+    private final VBox layout = new VBox(title, detail, rating, actors);
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -30,6 +35,14 @@ public class MovieCell extends ListCell<Movie> {
                             movie.getGenres().stream().map(Enum::name).sorted().reduce((a, b) -> a + ", " + b).orElse(""))
                             : "No description available"
             );
+
+            rating.setText("Rating: "+ movie.getRating().toString()+ " | Release year: "+ movie.getReleaseYear());
+            rating.getStyleClass().add("text-white");
+            rating.fontProperty().set(title.getFont().font(15));
+
+            actors.setText("Main cast: "+ movie.getMainCast().stream().collect(Collectors.joining(", ")));
+            actors.getStyleClass().add("text-white");
+            actors.fontProperty().set(title.getFont().font(15));
 
             // color scheme
             title.getStyleClass().add("text-yellow");

@@ -83,6 +83,7 @@ public class HomeController implements Initializable {
 
         String ratingValue = rating.getValue();
         if (ratingValue != null && !ratingValue.isBlank()) {
+            // TODO
             parametersMap.put("ratingFrom", ratingValue);
         }
 
