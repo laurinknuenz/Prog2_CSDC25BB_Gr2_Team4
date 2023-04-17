@@ -126,4 +126,22 @@ public class HomeController implements Initializable {
         releaseYear.setValue(null);
         List<Movie> movies = apiConsumer.getAllMovies();
     }
+
+    private String getMostPopularActor(List<Movie> movies) {
+        return movies.stream().map(Movie::getMainCast).flatMap(List::stream)
+                .collect(Collectors.groupingBy(s -> s, Collectors.counting())).entrySet().stream()
+                .max(Map.Entry.comparingByValue()).orElse(null).getKey();
+    }
+
+    private int getLongestMovieTitle(List<Movie> movies) {
+        return movies.stream().map(Movie::getTitle).max(Comparator.comparingInt(String::length)).get().length();
+    }
+
+    private long countMoviesFrom(List<Movie> movies, String director) {
+        return movies.stream().map(Movie::getDirectors).flatMap(List::stream).filter(d -> d.equals(director)).count();
+    }
+
+    private List<Movie> getMoviesBetweenYears(List<Movie> movies, int startYear, int endYear) {
+        return movies.stream().filter(m -> m.getReleaseYear() >= startYear && m.getReleaseYear() <= endYear).toList();
+    }
 }
