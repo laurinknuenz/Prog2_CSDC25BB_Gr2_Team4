@@ -35,24 +35,22 @@ public class MovieCell extends ListCell<Movie> {
                             movie.getGenres().stream().map(Enum::name).sorted().reduce((a, b) -> a + ", " + b).orElse(""))
                             : "No description available"
             );
-
             rating.setText("Rating: "+ movie.getRating().toString()+ " | Release year: "+ movie.getReleaseYear());
-            rating.getStyleClass().add("text-white");
-            rating.fontProperty().set(title.getFont().font(15));
-
             actors.setText("Main cast: "+ movie.getMainCast().stream().collect(Collectors.joining(", ")));
-            actors.getStyleClass().add("text-white");
-            actors.fontProperty().set(title.getFont().font(15));
 
             // color scheme
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
+            rating.getStyleClass().add("text-white");
+            actors.getStyleClass().add("text-white");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout
             title.fontProperty().set(title.getFont().font(20));
             detail.setMaxWidth(this.getScene().getWidth() - 30);
             detail.setWrapText(true);
+            rating.fontProperty().set(title.getFont().font(12));
+            actors.fontProperty().set(title.getFont().font(12));
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(10);
             layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);

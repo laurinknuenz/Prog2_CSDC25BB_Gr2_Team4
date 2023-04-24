@@ -30,6 +30,9 @@ public class Movie {
         return description;
     }
 
+    public List<String> getDirectors() {
+        return directors;
+    }
 
     public List<String> getMainCast() {
         return mainCast;
