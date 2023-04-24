@@ -118,7 +118,6 @@ public class HomeController implements Initializable {
         moviesToSort.sort(titleComparator);
         movieListView.setItems(FXCollections.observableList(moviesToSort));
     }
-
     private void OnResetButton() {
         searchField.setText("");
         genreComboBox.setValue(null);
