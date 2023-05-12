@@ -10,15 +10,22 @@ import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class HomeController implements Initializable {
+    @FXML private Button closeButton;
     @FXML
     public JFXButton searchBtn;
     @FXML
@@ -124,5 +131,12 @@ public class HomeController implements Initializable {
         rating.setValue(null);
         releaseYear.setValue(null);
         List<Movie> movies = apiConsumer.getAllMovies();
+    }
+
+    @FXML
+    protected void closeButtonOnClick(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("WatchList-view.fxml")));
+        Stage registerStage = (Stage) closeButton.getScene().getWindow();
+        registerStage.setScene(new Scene(root, 980, 650));
     }
 }

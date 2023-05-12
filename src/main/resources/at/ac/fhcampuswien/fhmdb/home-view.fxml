@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.Button?>
 <VBox prefHeight="331.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.HomeController">
    <HBox alignment="CENTER_LEFT" prefHeight="42.0" prefWidth="347.0" spacing="20.0" style="-fx-background-color: black;">
       <padding>
@@ -36,6 +37,8 @@
          <JFXComboBox fx:id="rating" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <JFXButton fx:id="searchBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Filter" />
          <JFXButton fx:id="resetBtn" styleClass="background-green" stylesheets="@styles.css" text="Reset" />
+         <Button fx:id="closeButton" layoutX="439.0" layoutY="519.0" mnemonicParsing="false" onAction="#closeButtonOnClick" prefHeight="29.0" prefWidth="140.0" style="-fx-background-color: #276969;" text="Switch to watch list" textFill="WHITE" />
+
       </children>
       <VBox.margin>
          <Insets />
