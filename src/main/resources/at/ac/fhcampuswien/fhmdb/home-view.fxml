@@ -37,7 +37,7 @@
          <JFXComboBox fx:id="rating" focusColor="#f5c518" styleClass="filter-combo-box" stylesheets="@styles.css" />
          <JFXButton fx:id="searchBtn" styleClass="background-yellow" stylesheets="@styles.css" text="Filter" />
          <JFXButton fx:id="resetBtn" styleClass="background-green" stylesheets="@styles.css" text="Reset" />
-         <Button fx:id="closeButton" layoutX="439.0" layoutY="519.0" mnemonicParsing="false" onAction="#closeButtonOnClick" prefHeight="29.0" prefWidth="140.0" style="-fx-background-color: #276969;" text="Switch to watch list" textFill="WHITE" />
+         <Button fx:id="watchListButton" layoutX="439.0" layoutY="519.0" mnemonicParsing="false" onAction="#watchListOnClick" prefHeight="29.0" prefWidth="140.0" style="-fx-background-color: #276969;" text="Switch to watch list" textFill="WHITE" />
 
       </children>
       <VBox.margin>
@@ -46,6 +46,7 @@
       <padding>
          <Insets bottom="20.0" left="10.0" top="20.0" />
       </padding>
+
    </HBox>
    <JFXListView fx:id="movieListView" styleClass="background-black" style="-fx-background-color: black;" stylesheets="@styles.css" VBox.vgrow="ALWAYS" />
 </VBox>

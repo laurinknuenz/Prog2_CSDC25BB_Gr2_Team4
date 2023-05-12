@@ -3,6 +3,7 @@ package at.ac.fhcampuswien.fhmdb;
 import at.ac.fhcampuswien.fhmdb.api.ApiConsumer;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.WatchListMovieCell;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -21,21 +22,21 @@ import java.util.ResourceBundle;
 
 public class WatchListController implements Initializable {
     @FXML private Button HomeButton;
-    //public JFXListView<Movie> movieListView;
-    //private final ApiConsumer apiConsumer = new ApiConsumer();
+    @FXML
+    public JFXListView<Movie> movieListView;
+    private final ApiConsumer apiConsumer = new ApiConsumer();
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        //movieListView.setItems(FXCollections.observableList(apiConsumer.getAllMovies()));
+        //movieListView.setCellFactory(movieListView -> new WatchListMovieCell());
+    }
 
     @FXML
     protected void HomeOnClick(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("home-view.fxml")));
         Stage registerStage = (Stage) HomeButton.getScene().getWindow();
         registerStage.setScene(new Scene(root, 980, 650));
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        //movieListView.setItems(FXCollections.observableList(apiConsumer.getAllMovies()));
-        //movieListView.setCellFactory(movieListView -> new MovieCell());
     }
 }
 

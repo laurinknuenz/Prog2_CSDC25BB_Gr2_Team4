@@ -2,6 +2,7 @@ package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -12,21 +13,15 @@ import javafx.scene.paint.Color;
 
 import java.util.stream.Collectors;
 
-public class MovieCell extends ListCell<Movie> {
+public class WatchListMovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label detail = new Label();
     private final Label rating = new Label();
     private final Label actors = new Label();
-    private final Button button = new Button("Add to watch list");
+    private final Button button = new Button("Remove from watch list");
+
     private final VBox layout = new VBox(title, detail, rating, actors, button);
-    /*
-    public MovieCell() {
-        button.setOnAction(event -> {
-            // Handle button click event
-            System.out.println("Button clicked for movie: " + getItem().getTitle());
-        });
-    }
-    */
+
     @Override
     protected void updateItem(Movie movie, boolean empty) {
         super.updateItem(movie, empty);
@@ -63,9 +58,10 @@ public class MovieCell extends ListCell<Movie> {
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(10);
             layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
-            VBox.setMargin(button, new Insets(0, 0, 0, 840));
+            VBox.setMargin(button, new Insets(0, 0, 0, 800));
             setGraphic(layout);
         }
     }
 }
+
 

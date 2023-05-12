@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class HomeController implements Initializable {
-    @FXML private Button closeButton;
+    @FXML private Button watchListButton;
     @FXML
     public JFXButton searchBtn;
     @FXML
@@ -51,6 +51,10 @@ public class HomeController implements Initializable {
         movieListView.setItems(FXCollections.observableList(apiConsumer.getAllMovies()));
         movieListView.setCellFactory(movieListView -> new MovieCell());
 
+        FilteringOperations();
+    }
+
+    private void FilteringOperations() {
         setUpGenreComboBox();
         setUpReleaseYearComboBox();
         setupRatingComboBox();
@@ -60,7 +64,6 @@ public class HomeController implements Initializable {
         rating.setOnAction(actionEvent -> onSearchParametersUpdated());
         releaseYear.setOnAction(actionEvent -> onSearchParametersUpdated());
         sortBtn.setOnAction(this::sortObservableList);
-
         resetBtn.setOnAction(actionEvent -> OnResetButton());
     }
 
@@ -134,9 +137,9 @@ public class HomeController implements Initializable {
     }
 
     @FXML
-    protected void closeButtonOnClick(ActionEvent event) throws IOException {
+    protected void watchListOnClick(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("WatchList-view.fxml")));
-        Stage registerStage = (Stage) closeButton.getScene().getWindow();
+        Stage registerStage = (Stage) watchListButton.getScene().getWindow();
         registerStage.setScene(new Scene(root, 980, 650));
     }
 }
