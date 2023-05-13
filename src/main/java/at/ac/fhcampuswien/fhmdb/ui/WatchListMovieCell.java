@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,6 +13,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 public class WatchListMovieCell extends ListCell<Movie> {
@@ -21,6 +24,8 @@ public class WatchListMovieCell extends ListCell<Movie> {
     private final Button button = new Button("Remove from watch list");
 
     private final VBox layout = new VBox(title, detail, rating, actors, button);
+
+    WatchlistRepository repository = new WatchlistRepository();
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -61,6 +66,17 @@ public class WatchListMovieCell extends ListCell<Movie> {
             VBox.setMargin(button, new Insets(0, 0, 0, 800));
             setGraphic(layout);
         }
+
+        button.setOnMouseClicked(mouseEvent -> {
+            Movie clickedMovie = getItem();
+            WatchlistMovieEntity watchlistMovie = new WatchlistMovieEntity(clickedMovie.getTitle(), clickedMovie.getDescription(), clickedMovie.getGenres(),
+                    clickedMovie.getReleaseYear(), "", 0, clickedMovie.getRating());
+            try {
+                repository.removeFromWatchlist(watchlistMovie);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
 
