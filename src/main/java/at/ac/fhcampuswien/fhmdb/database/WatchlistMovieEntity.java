@@ -68,8 +68,26 @@ public class WatchlistMovieEntity {
     public String getTitle() {
         return title;
     }
+
     public static WatchlistMovieEntity movieToEntityMapper(Movie movie) {
         return new WatchlistMovieEntity(movie.getId(), movie.getTitle(), movie.getDescription(), movie.getGenres(),
                 movie.getReleaseYear(), "", 0, movie.getRating());
+    }
+
+    public Movie entityToMovieMapper() {
+        String[] genreStrings = genres.split(",");
+        List<Genre> genreList = new ArrayList<>();
+        for (String genre : genreStrings) {
+            genreList.add(Genre.valueOf(genre));
+        }
+        return new Movie(apiId, title, description, genreList, releaseYear, imgUrl, lengthInMinutes, rating);
+    }
+
+    public static List<Movie> entityListToMovieListMapper(List<WatchlistMovieEntity> entities) {
+        List<Movie> movies =new ArrayList<>();
+        for(WatchlistMovieEntity entity: entities){
+            movies.add(entity.entityToMovieMapper());
+        }
+        return movies;
     }
 }

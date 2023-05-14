@@ -26,10 +26,10 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class WatchListController implements Initializable {
-    @FXML private Button HomeButton;
+    @FXML
+    private Button HomeButton;
     @FXML
     public JFXListView<Movie> movieListView;
-    private final ApiConsumer apiConsumer = new ApiConsumer();
 
     WatchlistRepository repo = new WatchlistRepository();
 
@@ -42,22 +42,8 @@ public class WatchListController implements Initializable {
         } catch (SQLException e) {
             //TODO: Tell user, what the error is
         }
-
-        for(WatchlistMovieEntity movie : movies){
-            System.out.println(movie.toString());
-
-            movieListView.setItems(FXCollections.observableList(MapApiMoviesToWatchListMovies(apiConsumer, movies)));
-            movieListView.setCellFactory(movieListView -> new WatchListMovieCell());
-        }
-    }
-
-    public List<Movie> MapApiMoviesToWatchListMovies(ApiConsumer apiConsumer, List<WatchlistMovieEntity> watchlistMovies) {
-        return apiConsumer.getAllMovies().stream()
-                .filter(apiMovie -> watchlistMovies.stream()
-                        .anyMatch(watchlistMovie -> apiMovie.getTitle().equalsIgnoreCase(watchlistMovie.getTitle()))
-                )
-                .distinct()
-                .collect(Collectors.toList());
+        movieListView.setItems(FXCollections.observableList(WatchlistMovieEntity.entityListToMovieListMapper(movies)));
+        movieListView.setCellFactory(movieListView -> new WatchListMovieCell());
     }
 
     @FXML

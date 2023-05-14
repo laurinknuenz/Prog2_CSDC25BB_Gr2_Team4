@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +29,18 @@ public class Movie {
 
     public String getDescription() {
         return description;
+    }
+
+    public Movie(String id, String title, String description, List<Genre> genres, Integer releaseYear, String imgUrl, Integer lengthInMinutes, Double rating){
+        this.id = id;
+        this.title = title;
+        this.description=description;
+        this.genres= genres;
+        this.releaseYear = releaseYear;
+        this.rating = rating;
+        directors = new ArrayList<>();
+        writers=new ArrayList<>();
+        mainCast=new ArrayList<>();
     }
 
     public List<String> getDirectors() {
