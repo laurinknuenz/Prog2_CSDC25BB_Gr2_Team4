@@ -1,9 +1,11 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
 import at.ac.fhcampuswien.fhmdb.models.Genre;
+import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @DatabaseTable(tableName = "movie")
@@ -12,15 +14,16 @@ public class WatchlistMovieEntity {
     private long id;
 
     @DatabaseField()
-    private String apild;
+    private String apiId;
 
     @DatabaseField()
     private String title;
 
-    public WatchlistMovieEntity(){
+    public WatchlistMovieEntity() {
     }
 
-    public WatchlistMovieEntity(String title, String description, List<Genre> genres, Integer releaseYear, String imgUrl, int lengthInMinutes, Double rating) {
+    public WatchlistMovieEntity(String apiId, String title, String description, List<Genre> genres, Integer releaseYear, String imgUrl, int lengthInMinutes, Double rating) {
+        this.apiId = apiId;
         this.title = title;
         this.description = description;
         this.genres = genresToString(genres);
@@ -52,7 +55,7 @@ public class WatchlistMovieEntity {
         StringBuilder genresString = new StringBuilder();
         for (Genre genre : genres) {
             genresString.append(genre.name());
-            if (genre != genres.get(genres.size()-1)) genresString.append(',');
+            if (genre != genres.get(genres.size() - 1)) genresString.append(',');
         }
         return genresString.toString();
     }
@@ -62,7 +65,11 @@ public class WatchlistMovieEntity {
         return this.title;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
+    }
+    public static WatchlistMovieEntity movieToEntityMapper(Movie movie) {
+        return new WatchlistMovieEntity(movie.getId(), movie.getTitle(), movie.getDescription(), movie.getGenres(),
+                movie.getReleaseYear(), "", 0, movie.getRating());
     }
 }

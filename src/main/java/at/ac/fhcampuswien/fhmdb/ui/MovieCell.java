@@ -68,8 +68,7 @@ public class MovieCell extends ListCell<Movie> {
 
         button.setOnMouseClicked(mouseEvent -> {
             Movie clickedMovie = getItem();
-            WatchlistMovieEntity watchlistMovie = new WatchlistMovieEntity(clickedMovie.getTitle(), clickedMovie.getDescription(), clickedMovie.getGenres(),
-                    clickedMovie.getReleaseYear(), "", 0, clickedMovie.getRating());
+            WatchlistMovieEntity watchlistMovie = WatchlistMovieEntity.movieToEntityMapper(clickedMovie);
             try {
                 repository.addToWatchlist(watchlistMovie);
             } catch (SQLException e) {
