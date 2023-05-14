@@ -35,14 +35,8 @@ public class WatchListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        List<WatchlistMovieEntity> movies = new ArrayList<>();
 
-        try {
-            movies = repo.getAll();
-        } catch (SQLException e) {
-            //TODO: Tell user, what the error is
-        }
-        movieListView.setItems(FXCollections.observableList(Movie.sortMovies(true, WatchlistMovieEntity.entityListToMovieListMapper(movies))));
+        movieListView.setItems(FXCollections.observableList(getWatchListMovies()));
         movieListView.setCellFactory(movieListView -> new WatchListMovieCell(onRemoveFromWatchListClicked));
     }
 
@@ -53,13 +47,25 @@ public class WatchListController implements Initializable {
         registerStage.setScene(new Scene(root, 980, 650));
     }
 
-    private final ClickEventHandler<Movie> onRemoveFromWatchListClicked = (clickedMovie) ->{
+    private List<Movie> getWatchListMovies() {
+        List<WatchlistMovieEntity> movieEntities = new ArrayList<>();
+
+        try {
+            movieEntities = repo.getAll();
+        } catch (SQLException e) {
+            //TODO: Tell user, what the error is
+        }
+        return Movie.sortMovies(true, WatchlistMovieEntity.entityListToMovieListMapper(movieEntities));
+    }
+
+    private final ClickEventHandler<Movie> onRemoveFromWatchListClicked = (clickedMovie) -> {
         WatchlistMovieEntity watchlistMovie = WatchlistMovieEntity.movieToEntityMapper(clickedMovie);
         try {
             repo.removeFromWatchlist(watchlistMovie);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        movieListView.setItems(FXCollections.observableList(getWatchListMovies()));
     };
 }
 
