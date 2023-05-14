@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.models;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -69,5 +70,14 @@ public class Movie {
     @Override
     public int hashCode() {
         return Objects.hash(id, title, genres, releaseYear, description, directors, writers, mainCast, rating);
+    }
+
+    public static List<Movie> sortMovies(final boolean ascending, List<Movie> moviesToSort) {
+        Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle);
+        if (!ascending) {
+            titleComparator = titleComparator.reversed();
+        }
+        moviesToSort.sort(titleComparator);
+        return moviesToSort;
     }
 }

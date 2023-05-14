@@ -69,7 +69,7 @@ public class HomeController implements Initializable {
 
     private void sortObservableList(ActionEvent actionEvent) {
         boolean isAscendingOrder = sortBtn.getText().equals("Sort (asc)");
-        sortMoviesByOrder(isAscendingOrder);
+        movieListView.setItems(FXCollections.observableList(Movie.sortMovies(isAscendingOrder, movieListView.getItems())));
         sortBtn.setText(isAscendingOrder ? "Sort (desc)" : "Sort (asc)");
     }
 
@@ -118,16 +118,6 @@ public class HomeController implements Initializable {
         rating.getItems().addAll(ratingStrings);
     }
 
-    private void sortMoviesByOrder(final boolean ascending) {
-        Comparator<Movie> titleComparator = Comparator.comparing(Movie::getTitle);
-        if (!ascending) {
-            titleComparator = titleComparator.reversed();
-        }
-
-        List<Movie> moviesToSort = new ArrayList<>(movieListView.getItems());
-        moviesToSort.sort(titleComparator);
-        movieListView.setItems(FXCollections.observableList(moviesToSort));
-    }
     private void OnResetButton() {
         searchField.setText("");
         genreComboBox.setValue(null);

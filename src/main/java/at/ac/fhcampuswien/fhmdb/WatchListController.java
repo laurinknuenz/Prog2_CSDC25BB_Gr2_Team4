@@ -42,7 +42,7 @@ public class WatchListController implements Initializable {
         } catch (SQLException e) {
             //TODO: Tell user, what the error is
         }
-        movieListView.setItems(FXCollections.observableList(WatchlistMovieEntity.entityListToMovieListMapper(movies)));
+        movieListView.setItems(FXCollections.observableList(Movie.sortMovies(true, WatchlistMovieEntity.entityListToMovieListMapper(movies))));
         movieListView.setCellFactory(movieListView -> new WatchListMovieCell());
     }
 
