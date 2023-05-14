@@ -43,7 +43,7 @@ public class WatchListController implements Initializable {
             //TODO: Tell user, what the error is
         }
         movieListView.setItems(FXCollections.observableList(Movie.sortMovies(true, WatchlistMovieEntity.entityListToMovieListMapper(movies))));
-        movieListView.setCellFactory(movieListView -> new WatchListMovieCell());
+        movieListView.setCellFactory(movieListView -> new WatchListMovieCell(onRemoveFromWatchListClicked));
     }
 
     @FXML
@@ -52,6 +52,15 @@ public class WatchListController implements Initializable {
         Stage registerStage = (Stage) HomeButton.getScene().getWindow();
         registerStage.setScene(new Scene(root, 980, 650));
     }
+
+    private final ClickEventHandler<Movie> onRemoveFromWatchListClicked = (clickedMovie) ->{
+        WatchlistMovieEntity watchlistMovie = WatchlistMovieEntity.movieToEntityMapper(clickedMovie);
+        try {
+            repo.removeFromWatchlist(watchlistMovie);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    };
 }
 
 

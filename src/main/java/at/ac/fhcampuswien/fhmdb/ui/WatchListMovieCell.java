@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -24,7 +25,11 @@ public class WatchListMovieCell extends ListCell<Movie> {
 
     private final VBox layout = new VBox(title, detail, rating, actors, button);
 
-    WatchlistRepository repository = new WatchlistRepository();
+    public WatchListMovieCell(ClickEventHandler<Movie> removeFromWatchListClicked){
+        button.setOnMouseClicked(mouseEvent->{
+            removeFromWatchListClicked.onClick(getItem());
+        });
+    }
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -65,16 +70,6 @@ public class WatchListMovieCell extends ListCell<Movie> {
             VBox.setMargin(button, new Insets(0, 0, 0, 800));
             setGraphic(layout);
         }
-
-        button.setOnMouseClicked(mouseEvent -> {
-            Movie clickedMovie = getItem();
-            WatchlistMovieEntity watchlistMovie = WatchlistMovieEntity.movieToEntityMapper(clickedMovie);
-            try {
-                repository.removeFromWatchlist(watchlistMovie);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 }
 

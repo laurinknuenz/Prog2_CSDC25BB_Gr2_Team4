@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.api.ApiConsumer;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
+import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
@@ -20,12 +22,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class HomeController implements Initializable {
-    @FXML private Button watchListButton;
+    @FXML
+    private Button watchListButton;
     @FXML
     public JFXButton searchBtn;
     @FXML
@@ -45,11 +48,13 @@ public class HomeController implements Initializable {
 
     private final ApiConsumer apiConsumer = new ApiConsumer();
 
+    WatchlistRepository repo = new WatchlistRepository();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // initialize UI stuff
         movieListView.setItems(FXCollections.observableList(apiConsumer.getAllMovies()));
-        movieListView.setCellFactory(movieListView -> new MovieCell());
+        movieListView.setCellFactory(movieListView -> new MovieCell(onAddToWatchListClicked));
 
         FilteringOperations();
     }
@@ -132,4 +137,13 @@ public class HomeController implements Initializable {
         Stage registerStage = (Stage) watchListButton.getScene().getWindow();
         registerStage.setScene(new Scene(root, 980, 650));
     }
+
+    private final ClickEventHandler<Movie> onAddToWatchListClicked = (clickedMovie) -> {
+        WatchlistMovieEntity watchlistMovie = WatchlistMovieEntity.movieToEntityMapper(clickedMovie);
+        try {
+            repo.addToWatchlist(watchlistMovie);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    };
 }
