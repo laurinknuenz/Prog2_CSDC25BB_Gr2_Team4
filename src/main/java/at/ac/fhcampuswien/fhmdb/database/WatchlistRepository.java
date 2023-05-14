@@ -18,11 +18,27 @@ public class WatchlistRepository {
     }
 
     public void addToWatchlist(WatchlistMovieEntity movie) throws SQLException {
-        dao.create(movie);
+        List<WatchlistMovieEntity> existingMovies = dao.queryForEq("title", movie.getTitle());
+        if (existingMovies.isEmpty()) {
+            dao.create(movie);
+        } else {
+            //TODO throw exception say it already exists or sth.
+        }
     }
 
     public void removeFromWatchlist(WatchlistMovieEntity movie) throws SQLException {
-        dao.delete(movie);
+        //dao.delete(movie);
+        try {
+            String apiId = movie.getTitle();
+            if(dao != null){
+                DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = dao.deleteBuilder();
+                if(deleteBuilder != null){
+                    deleteBuilder.where().eq("title", movie.getTitle());
+                    dao.delete(deleteBuilder.prepare());
+                }
+            }
+        } catch (SQLException | IllegalArgumentException e) {
+        }
     }
 
     public List<WatchlistMovieEntity> getAll() throws SQLException {
