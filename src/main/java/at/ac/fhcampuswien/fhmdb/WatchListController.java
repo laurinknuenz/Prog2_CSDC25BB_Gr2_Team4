@@ -4,7 +4,6 @@ import at.ac.fhcampuswien.fhmdb.api.ApiConsumer;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
-import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import at.ac.fhcampuswien.fhmdb.ui.WatchListMovieCell;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class WatchListController implements Initializable {
     @FXML private Button HomeButton;
@@ -31,14 +31,10 @@ public class WatchListController implements Initializable {
     public JFXListView<Movie> movieListView;
     private final ApiConsumer apiConsumer = new ApiConsumer();
 
-    WatchlistRepository repo;
+    WatchlistRepository repo = new WatchlistRepository();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //movieListView.setItems(FXCollections.observableList(apiConsumer.getAllMovies()));
-        //movieListView.setCellFactory(movieListView -> new WatchListMovieCell());
-
-        repo = new WatchlistRepository();
         List<WatchlistMovieEntity> movies = new ArrayList<>();
 
         try {
@@ -49,8 +45,19 @@ public class WatchListController implements Initializable {
 
         for(WatchlistMovieEntity movie : movies){
             System.out.println(movie.toString());
-            //TODO: Show movies properly in view
+
+            movieListView.setItems(FXCollections.observableList(MapApiMoviesToWatchListMovies(apiConsumer, movies)));
+            movieListView.setCellFactory(movieListView -> new WatchListMovieCell());
         }
+    }
+
+    public List<Movie> MapApiMoviesToWatchListMovies(ApiConsumer apiConsumer, List<WatchlistMovieEntity> watchlistMovies) {
+        return apiConsumer.getAllMovies().stream()
+                .filter(apiMovie -> watchlistMovies.stream()
+                        .anyMatch(watchlistMovie -> apiMovie.getTitle().equalsIgnoreCase(watchlistMovie.getTitle()))
+                )
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @FXML

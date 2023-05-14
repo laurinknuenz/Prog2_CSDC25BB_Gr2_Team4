@@ -23,14 +23,6 @@ public class MovieCell extends ListCell<Movie> {
     private final Label actors = new Label();
     private final Button button = new Button("Add to watch list");
     private final VBox layout = new VBox(title, detail, rating, actors, button);
-    /*
-    public MovieCell() {
-        button.setOnAction(event -> {
-            // Handle button click event
-            System.out.println("Button clicked for movie: " + getItem().getTitle());
-        });
-    }
-    */
 
     WatchlistRepository repository = new WatchlistRepository();
 
@@ -73,7 +65,6 @@ public class MovieCell extends ListCell<Movie> {
             VBox.setMargin(button, new Insets(0, 0, 0, 840));
             setGraphic(layout);
         }
-
 
         button.setOnMouseClicked(mouseEvent -> {
             Movie clickedMovie = getItem();

@@ -61,4 +61,8 @@ public class WatchlistMovieEntity {
     public String toString() {
         return this.title;
     }
+
+    public String getTitle(){
+        return title;
+    }
 }
