@@ -1,5 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.api;
 
+import at.ac.fhcampuswien.fhmdb.HomeController;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 public class ApiConsumer {
     private static final String API = "https://prog2.fh-campuswien.ac.at/movies";
+    private static final String ERROR_MESSAGE = "Failed to query movies from API.";
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
 
     // https://howtodoinjava.com/gson/gson/ last visited 16/04/2023.
@@ -45,7 +48,12 @@ public class ApiConsumer {
                 .method("GET", null)
                 .build();
 
-        return queryMoviesFromApi(request);
+        try {
+            return queryMoviesFromApi(request);
+        } catch (Exception e) {
+            HomeController.showInfoMessage(e.getMessage());
+            throw new MovieApiException(ERROR_MESSAGE, e);
+        }
     }
 
     private List<Movie> queryMoviesFromApi(Request request) {
@@ -53,7 +61,8 @@ public class ApiConsumer {
             Movie[] movies = GSON.fromJson(response.body().charStream(), Movie[].class);
             return Arrays.asList(movies);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            HomeController.showInfoMessage(e.getMessage());
+            throw new MovieApiException(ERROR_MESSAGE, e);
         }
     }
 }

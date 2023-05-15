@@ -1,13 +1,10 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
+import at.ac.fhcampuswien.fhmdb.HomeController;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.stmt.Where;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class WatchlistRepository {
@@ -22,12 +19,10 @@ public class WatchlistRepository {
         if (existingMovies.isEmpty()) {
             dao.create(movie);
         } else {
-            //TODO throw exception say it already exists or sth.
+            HomeController.showInfoMessage("You already have this in your watch list! \n click ok to continue :) ");
         }
     }
-
     public void removeFromWatchlist(WatchlistMovieEntity movie) throws SQLException {
-        //dao.delete(movie);
         try {
             String apiId = movie.getTitle();
             if(dao != null){
