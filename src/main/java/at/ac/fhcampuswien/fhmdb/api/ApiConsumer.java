@@ -34,7 +34,7 @@ public class ApiConsumer {
         return getMovies(Map.of());
     }
 
-    public List<Movie> getMovies(final Map<String, String> queryParams) {
+    public List<Movie> getMovies(final Map<String, String> queryParams) throws MovieApiException{
         var urlBuilder = new HttpUrl.Builder()
                 .scheme("https")
                 .host("prog2.fh-campuswien.ac.at")
@@ -56,7 +56,7 @@ public class ApiConsumer {
         }
     }
 
-    private List<Movie> queryMoviesFromApi(Request request) {
+    private List<Movie> queryMoviesFromApi(Request request) throws MovieApiException {
         try (Response response = HTTP_CLIENT.newCall(request).execute()) {
             Movie[] movies = GSON.fromJson(response.body().charStream(), Movie[].class);
             return Arrays.asList(movies);

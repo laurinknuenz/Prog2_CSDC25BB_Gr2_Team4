@@ -18,21 +18,6 @@ public class WatchlistMovieEntity {
 
     @DatabaseField()
     private String title;
-
-    public WatchlistMovieEntity() {
-    }
-
-    public WatchlistMovieEntity(String apiId, String title, String description, List<Genre> genres, Integer releaseYear, String imgUrl, int lengthInMinutes, Double rating) {
-        this.apiId = apiId;
-        this.title = title;
-        this.description = description;
-        this.genres = genresToString(genres);
-        this.releaseYear = releaseYear;
-        this.imgUrl = imgUrl;
-        this.lengthInMinutes = lengthInMinutes;
-        this.rating = rating;
-    }
-
     @DatabaseField()
     private String description;
 
@@ -50,6 +35,21 @@ public class WatchlistMovieEntity {
 
     @DatabaseField()
     private Double rating;
+
+
+    public WatchlistMovieEntity() {
+    }
+
+    public WatchlistMovieEntity(String apiId, String title, String description, List<Genre> genres, Integer releaseYear, String imgUrl, int lengthInMinutes, Double rating) {
+        this.apiId = apiId;
+        this.title = title;
+        this.description = description;
+        this.genres = genresToString(genres);
+        this.releaseYear = releaseYear;
+        this.imgUrl = imgUrl;
+        this.lengthInMinutes = lengthInMinutes;
+        this.rating = rating;
+    }
 
     private String genresToString(List<Genre> genres) {
         StringBuilder genresString = new StringBuilder();
