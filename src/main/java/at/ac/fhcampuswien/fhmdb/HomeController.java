@@ -56,13 +56,6 @@ public class HomeController implements Initializable {
     public HomeController() throws DatabaseException {
     }
 
-    public static void showInfoMessage(String alertMessage) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Oops!");
-        alert.setHeaderText(alertMessage);
-        alert.showAndWait();
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // initialize UI stuff
@@ -153,12 +146,15 @@ public class HomeController implements Initializable {
 
     private final ClickEventHandler<Movie> onAddToWatchListClicked = (clickedMovie) -> {
         WatchlistMovieEntity watchlistMovie = WatchlistMovieEntity.movieToEntityMapper(clickedMovie);
-        try {
-            repo.addToWatchlist(watchlistMovie);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        repo.addToWatchlist(watchlistMovie);
     };
 
     private final ClickEventHandler<MovieCell> onExpandDetailsClicked = MovieCell::expandDetails;
+
+    public static void showInfoMessage(String alertMessage) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Oops!");
+        alert.setHeaderText(alertMessage);
+        alert.showAndWait();
+    }
 }

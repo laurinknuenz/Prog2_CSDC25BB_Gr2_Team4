@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.interfaces.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
@@ -29,10 +30,18 @@ public class MovieCell extends ListCell<Movie> {
 
     public MovieCell(Boolean isWatchList, ClickEventHandler<Movie> addToWatchListClicked, ClickEventHandler<MovieCell> expandDetailsClicked) {
         buttonWatchlist.setOnMouseClicked(mouseEvent -> {
-            addToWatchListClicked.onClick(getItem());
+            try {
+                addToWatchListClicked.onClick(getItem());
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            }
         });
         buttonDetails.setOnMouseClicked(mouseEvent -> {
-            expandDetailsClicked.onClick(this);
+            try {
+                expandDetailsClicked.onClick(this);
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            }
         });
         buttonWatchlist.setText(isWatchList ? "Remove from Watch List" : "Add to Watch List");
     }

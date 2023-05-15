@@ -2,6 +2,7 @@ package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.interfaces.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
@@ -13,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
@@ -30,7 +32,15 @@ public class WatchListController implements Initializable {
     @FXML
     public JFXListView<Movie> movieListView;
 
-    WatchlistRepository repo = new WatchlistRepository();
+    WatchlistRepository repo;
+
+    {
+        try {
+            repo = new WatchlistRepository();
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -51,8 +61,8 @@ public class WatchListController implements Initializable {
 
         try {
             movieEntities = repo.getAll();
-        } catch (SQLException e) {
-            //TODO: Tell user, what the error is
+        } catch (DatabaseException e) {
+            showInfoMessage("Something went wrong while trying to retrieve the movies");
         }
         return Movie.sortMovies(true, WatchlistMovieEntity.entityListToMovieListMapper(movieEntities));
     }
@@ -63,11 +73,20 @@ public class WatchListController implements Initializable {
             repo.removeFromWatchlist(watchlistMovie);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("");
         }
         movieListView.setItems(FXCollections.observableList(getWatchListMovies()));
     };
 
     private final ClickEventHandler<MovieCell> onExpandDetailsClicked = MovieCell::expandDetails;
+
+    public static void showInfoMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Oops!");
+        alert.setHeaderText(message);
+        alert.showAndWait();
+    }
 }
 
 
