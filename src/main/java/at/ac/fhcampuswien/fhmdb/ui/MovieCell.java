@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -19,20 +20,21 @@ public class MovieCell extends ListCell<Movie> {
     private final Label detail = new Label();
     private final Label rating = new Label();
     private final Label actors = new Label();
-    private final Button buttonWatchlist = new Button("Add to watch list");
-
+    private final Button buttonWatchlist = new Button();
     private final Button buttonDetails = new Button("Expand Details");
-    private final VBox layout = new VBox(title, buttonWatchlist, buttonDetails);
+    private final HBox buttons = new HBox(10, buttonWatchlist, buttonDetails);
+    private final VBox layout = new VBox(title, buttons);
 
     private boolean detailsAreVisible = false;
 
-    public MovieCell(ClickEventHandler<Movie> addToWatchListClicked, ClickEventHandler<MovieCell> expandDetailsClicked) {
+    public MovieCell(Boolean isWatchList, ClickEventHandler<Movie> addToWatchListClicked, ClickEventHandler<MovieCell> expandDetailsClicked) {
         buttonWatchlist.setOnMouseClicked(mouseEvent -> {
             addToWatchListClicked.onClick(getItem());
         });
         buttonDetails.setOnMouseClicked(mouseEvent -> {
             expandDetailsClicked.onClick(this);
         });
+        buttonWatchlist.setText(isWatchList ? "Remove from Watch List" : "Add to Watch List");
     }
 
     @Override
@@ -72,8 +74,7 @@ public class MovieCell extends ListCell<Movie> {
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(10);
             layout.alignmentProperty().set(Pos.CENTER_LEFT);
-            VBox.setMargin(buttonWatchlist, new Insets(0, 0, 0, 840));
-            VBox.setMargin(buttonDetails, new Insets(0, 0, 0, 840));
+            buttons.setAlignment(Pos.CENTER_RIGHT);
             setGraphic(layout);
         }
     }
@@ -82,8 +83,8 @@ public class MovieCell extends ListCell<Movie> {
         detailsAreVisible = !detailsAreVisible;
         if (detailsAreVisible) {
             buttonDetails.setText("Collapse details");
-            layout.getChildren().removeAll(buttonWatchlist, buttonDetails);
-            layout.getChildren().addAll(detail, rating, actors, buttonWatchlist, buttonDetails);
+            layout.getChildren().remove(buttons);
+            layout.getChildren().addAll(detail, rating, actors, buttons);
 
         } else {
             buttonDetails.setText("Expand details");

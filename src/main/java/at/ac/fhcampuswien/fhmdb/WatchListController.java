@@ -4,7 +4,7 @@ import at.ac.fhcampuswien.fhmdb.api.ApiConsumer;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
-import at.ac.fhcampuswien.fhmdb.ui.WatchListMovieCell;
+import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -37,7 +37,7 @@ public class WatchListController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         movieListView.setItems(FXCollections.observableList(getWatchListMovies()));
-        movieListView.setCellFactory(movieListView -> new WatchListMovieCell(onRemoveFromWatchListClicked));
+        movieListView.setCellFactory(movieListView -> new MovieCell(true, onRemoveFromWatchListClicked, onExpandDetailsClicked));
     }
 
     @FXML
@@ -67,6 +67,8 @@ public class WatchListController implements Initializable {
         }
         movieListView.setItems(FXCollections.observableList(getWatchListMovies()));
     };
+
+    private final ClickEventHandler<MovieCell> onExpandDetailsClicked = MovieCell::expandDetails;
 }
 
 
