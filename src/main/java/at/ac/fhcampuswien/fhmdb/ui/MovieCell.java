@@ -1,11 +1,9 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
-import at.ac.fhcampuswien.fhmdb.database.Database;
-import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
-import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -14,7 +12,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 public class MovieCell extends ListCell<Movie> {
@@ -22,12 +19,19 @@ public class MovieCell extends ListCell<Movie> {
     private final Label detail = new Label();
     private final Label rating = new Label();
     private final Label actors = new Label();
-    private final Button button = new Button("Add to watch list");
-    private final VBox layout = new VBox(title, detail, rating, actors, button);
+    private final Button buttonWatchlist = new Button("Add to watch list");
 
-    public MovieCell(ClickEventHandler<Movie> addToWatchListClicked){
-        button.setOnMouseClicked(mouseEvent -> {
+    private final Button buttonDetails = new Button("Expand Details");
+    private final VBox layout = new VBox(title, buttonWatchlist, buttonDetails);
+
+    private boolean detailsAreVisible = false;
+
+    public MovieCell(ClickEventHandler<Movie> addToWatchListClicked, ClickEventHandler<MovieCell> expandDetailsClicked) {
+        buttonWatchlist.setOnMouseClicked(mouseEvent -> {
             addToWatchListClicked.onClick(getItem());
+        });
+        buttonDetails.setOnMouseClicked(mouseEvent -> {
+            expandDetailsClicked.onClick(this);
         });
     }
 
@@ -56,7 +60,8 @@ public class MovieCell extends ListCell<Movie> {
             rating.getStyleClass().add("text-white");
             actors.getStyleClass().add("text-white");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
-            button.getStyleClass().add("my-button-style");
+            buttonWatchlist.getStyleClass().add("my-button-style");
+            buttonDetails.getStyleClass().add("my-button-style");
 
             // layout
             title.fontProperty().set(title.getFont().font(20));
@@ -66,9 +71,23 @@ public class MovieCell extends ListCell<Movie> {
             actors.fontProperty().set(title.getFont().font(12));
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(10);
-            layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
-            VBox.setMargin(button, new Insets(0, 0, 0, 840));
+            layout.alignmentProperty().set(Pos.CENTER_LEFT);
+            VBox.setMargin(buttonWatchlist, new Insets(0, 0, 0, 840));
+            VBox.setMargin(buttonDetails, new Insets(0, 0, 0, 840));
             setGraphic(layout);
+        }
+    }
+
+    public void expandDetails() {
+        detailsAreVisible = !detailsAreVisible;
+        if (detailsAreVisible) {
+            buttonDetails.setText("Collapse details");
+            layout.getChildren().removeAll(buttonWatchlist, buttonDetails);
+            layout.getChildren().addAll(detail, rating, actors, buttonWatchlist, buttonDetails);
+
+        } else {
+            buttonDetails.setText("Expand details");
+            layout.getChildren().removeAll(detail, rating, actors);
         }
     }
 }

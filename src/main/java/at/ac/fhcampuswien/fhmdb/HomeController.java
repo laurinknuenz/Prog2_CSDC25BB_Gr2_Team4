@@ -54,7 +54,7 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // initialize UI stuff
         movieListView.setItems(FXCollections.observableList(apiConsumer.getAllMovies()));
-        movieListView.setCellFactory(movieListView -> new MovieCell(onAddToWatchListClicked));
+        movieListView.setCellFactory(movieListView -> new MovieCell(onAddToWatchListClicked, onExpandDetailsClicked));
 
         FilteringOperations();
     }
@@ -146,4 +146,6 @@ public class HomeController implements Initializable {
             throw new RuntimeException(e);
         }
     };
+
+    private final ClickEventHandler<MovieCell> onExpandDetailsClicked = MovieCell::expandDetails;
 }
