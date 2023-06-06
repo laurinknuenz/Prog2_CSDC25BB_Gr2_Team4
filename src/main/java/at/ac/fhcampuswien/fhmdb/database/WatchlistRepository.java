@@ -12,29 +12,42 @@ import java.util.List;
 public class WatchlistRepository {
     Dao<WatchlistMovieEntity, Long> dao;
 
-    public WatchlistRepository() throws DatabaseException {
+    private static WatchlistRepository instance;
+
+    private WatchlistRepository() throws DatabaseException {
         this.dao = Database.getDatabase().getDao();
     }
 
+    public static WatchlistRepository getInstance(){
+        try {
+            if(instance == null) instance = new WatchlistRepository();
+
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+        return instance;
+    }
+
     public void addToWatchlist(WatchlistMovieEntity movie) throws DatabaseException {
-        try{
+        try {
             List<WatchlistMovieEntity> existingMovies = dao.queryForEq("title", movie.getTitle());
             if (existingMovies.isEmpty()) {
                 dao.create(movie);
-            }
-            else HomeController.showInfoMessage("You already have this in your watch list! \n click ok to continue :) ");
-        }catch (SQLException e){
-            throw  new DatabaseException(("Connection error"), e);
+            } else
+                HomeController.showInfoMessage("You already have this in your watch list! \n click ok to continue :) ");
+        } catch (SQLException e) {
+            throw new DatabaseException(("Connection error"), e);
         }
 
 
     }
+
     public void removeFromWatchlist(WatchlistMovieEntity movie) throws SQLException, DatabaseException {
         try {
             String apiId = movie.getTitle();
-            if(dao != null){
+            if (dao != null) {
                 DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = dao.deleteBuilder();
-                if(deleteBuilder != null){
+                if (deleteBuilder != null) {
                     deleteBuilder.where().eq("title", movie.getTitle());
                     dao.delete(deleteBuilder.prepare());
                 }

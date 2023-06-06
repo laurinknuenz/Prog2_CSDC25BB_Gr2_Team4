@@ -52,7 +52,7 @@ public class HomeController implements Initializable {
 
     private final ApiConsumer apiConsumer = new ApiConsumer();
 
-    WatchlistRepository repo = new WatchlistRepository();
+    WatchlistRepository repo = WatchlistRepository.getInstance();
 
     private SortingState sortingState = new AscendingState(this);
 

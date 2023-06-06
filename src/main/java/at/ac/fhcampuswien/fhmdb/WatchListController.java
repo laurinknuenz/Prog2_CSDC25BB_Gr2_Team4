@@ -32,15 +32,7 @@ public class WatchListController implements Initializable {
     @FXML
     public JFXListView<Movie> movieListView;
 
-    WatchlistRepository repo;
-
-    {
-        try {
-            repo = new WatchlistRepository();
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    WatchlistRepository repo = WatchlistRepository.getInstance();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
