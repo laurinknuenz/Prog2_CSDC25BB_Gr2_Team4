@@ -5,8 +5,10 @@ import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.interfaces.ClickEventHandler;
+import at.ac.fhcampuswien.fhmdb.sortingstates.SortingState;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.sortingstates.AscendingState;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -25,7 +27,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -53,7 +54,13 @@ public class HomeController implements Initializable {
 
     WatchlistRepository repo = new WatchlistRepository();
 
+    private SortingState sortingState = new AscendingState(this);
+
     public HomeController() throws DatabaseException {
+    }
+
+    public void setSortingState(SortingState sortingState) {
+        this.sortingState = sortingState;
     }
 
     @Override
@@ -63,6 +70,8 @@ public class HomeController implements Initializable {
         movieListView.setCellFactory(movieListView -> new MovieCell(false, onAddToWatchListClicked, onExpandDetailsClicked));
 
         FilteringOperations();
+
+        sortingState.sortObservableList();
     }
 
     private void FilteringOperations() {
@@ -79,9 +88,8 @@ public class HomeController implements Initializable {
     }
 
     private void sortObservableList(ActionEvent actionEvent) {
-        boolean isAscendingOrder = sortBtn.getText().equals("Sort (asc)");
-        movieListView.setItems(FXCollections.observableList(Movie.sortMovies(isAscendingOrder, movieListView.getItems())));
-        sortBtn.setText(isAscendingOrder ? "Sort (desc)" : "Sort (asc)");
+        sortingState.changeState();
+        sortingState.sortObservableList();
     }
 
     private void onSearchParametersUpdated() {
@@ -109,6 +117,8 @@ public class HomeController implements Initializable {
 
         List<Movie> movies = apiConsumer.getMovies(parametersMap);
         movieListView.setItems(FXCollections.observableList(movies));
+
+        sortingState.sortObservableList();
     }
 
     private void setUpGenreComboBox() {
