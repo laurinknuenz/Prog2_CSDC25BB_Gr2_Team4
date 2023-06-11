@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.EventListener.Observer;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class WatchListController implements Initializable {
+public class WatchListController implements Initializable, Observer {
     @FXML
     private Button HomeButton;
     @FXML
@@ -36,9 +37,9 @@ public class WatchListController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         movieListView.setItems(FXCollections.observableList(getWatchListMovies()));
         movieListView.setCellFactory(movieListView -> new MovieCell(true, onRemoveFromWatchListClicked, onExpandDetailsClicked));
+        repo.addObserver(this);
     }
 
     @FXML
@@ -78,6 +79,11 @@ public class WatchListController implements Initializable {
         alert.setTitle("Oops!");
         alert.setHeaderText(message);
         alert.showAndWait();
+    }
+
+    @Override
+    public void update(String message) {
+        showInfoMessage(message);
     }
 }
 

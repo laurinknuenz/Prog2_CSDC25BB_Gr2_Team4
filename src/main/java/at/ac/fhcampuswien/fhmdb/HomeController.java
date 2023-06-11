@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.EventListener.Observer;
 import at.ac.fhcampuswien.fhmdb.api.ApiConsumer;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
@@ -30,7 +31,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public class HomeController implements Initializable {
+public class HomeController implements Initializable, Observer {
     @FXML
     private Button watchListButton;
     @FXML
@@ -55,8 +56,10 @@ public class HomeController implements Initializable {
     WatchlistRepository repo = WatchlistRepository.getInstance();
 
     private SortingState sortingState = new AscendingState(this);
+    private static HomeController instance;
 
     public HomeController() throws DatabaseException {
+        WatchlistRepository.getInstance().addObserver(this);
     }
 
     public void setSortingState(SortingState sortingState) {
@@ -163,8 +166,13 @@ public class HomeController implements Initializable {
 
     public static void showInfoMessage(String alertMessage) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Oops!");
+        alert.setTitle("Alert!");
         alert.setHeaderText(alertMessage);
         alert.showAndWait();
+    }
+
+    @Override
+    public void update(String message) {
+        showInfoMessage(message);
     }
 }
