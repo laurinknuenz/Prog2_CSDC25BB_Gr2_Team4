@@ -44,8 +44,6 @@ public class WatchlistRepository implements Observable {
         } catch (SQLException e) {
             throw new DatabaseException(("Connection error"), e);
         }
-
-
     }
 
     public void removeFromWatchlist(WatchlistMovieEntity movie) throws SQLException, DatabaseException {

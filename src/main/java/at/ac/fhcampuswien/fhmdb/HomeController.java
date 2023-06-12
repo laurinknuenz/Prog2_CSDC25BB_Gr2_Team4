@@ -58,8 +58,14 @@ public class HomeController implements Initializable, Observer {
     private SortingState sortingState = new AscendingState(this);
     private static HomeController instance;
 
-    public HomeController() throws DatabaseException {
-        WatchlistRepository.getInstance().addObserver(this);
+    private HomeController() {
+    }
+
+    public static synchronized HomeController getInstance() throws DatabaseException {
+        if (instance == null) {
+            instance = new HomeController();
+        }
+        return instance;
     }
 
     public void setSortingState(SortingState sortingState) {
@@ -73,6 +79,7 @@ public class HomeController implements Initializable, Observer {
         movieListView.setCellFactory(movieListView -> new MovieCell(false, onAddToWatchListClicked, onExpandDetailsClicked));
 
         FilteringOperations();
+        WatchlistRepository.getInstance().addObserver(this);
 
         sortingState.sortObservableList();
     }
@@ -151,10 +158,9 @@ public class HomeController implements Initializable, Observer {
     }
 
     @FXML
-    protected void watchListOnClick(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("WatchList-view.fxml")));
-        Stage registerStage = (Stage) watchListButton.getScene().getWindow();
-        registerStage.setScene(new Scene(root, 980, 650));
+    protected void watchListOnClick(ActionEvent event) throws IOException, DatabaseException {
+        FhmdbApplication.switchToWatchListScene();
+        //WatchlistRepository.getInstance().removeObserver(this);
     }
 
     private final ClickEventHandler<Movie> onAddToWatchListClicked = (clickedMovie) -> {

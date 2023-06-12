@@ -32,8 +32,19 @@ public class WatchListController implements Initializable, Observer {
     private Button HomeButton;
     @FXML
     public JFXListView<Movie> movieListView;
-
+    private static WatchListController instance;
     WatchlistRepository repo = WatchlistRepository.getInstance();
+
+    private WatchListController() {
+        // Existing code...
+    }
+
+    public static synchronized WatchListController getInstance() {
+        if (instance == null) {
+            instance = new WatchListController();
+        }
+        return instance;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -44,9 +55,7 @@ public class WatchListController implements Initializable, Observer {
 
     @FXML
     protected void HomeOnClick(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("home-view.fxml")));
-        Stage registerStage = (Stage) HomeButton.getScene().getWindow();
-        registerStage.setScene(new Scene(root, 980, 650));
+        FhmdbApplication.switchToHomeScene();
     }
 
     private List<Movie> getWatchListMovies() {
