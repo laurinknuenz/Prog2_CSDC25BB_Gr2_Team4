@@ -11,20 +11,15 @@ import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class WatchListController implements Initializable, Observer {
@@ -32,29 +27,22 @@ public class WatchListController implements Initializable, Observer {
     private Button HomeButton;
     @FXML
     public JFXListView<Movie> movieListView;
-    private static WatchListController instance;
-    WatchlistRepository repo = WatchlistRepository.getInstance();
+    public static final WatchListController INSTANCE = new WatchListController();
+    private final WatchlistRepository repo = WatchlistRepository.getInstance();
 
     private WatchListController() {
-        // Existing code...
-    }
-
-    public static synchronized WatchListController getInstance() {
-        if (instance == null) {
-            instance = new WatchListController();
-        }
-        return instance;
+        repo.addObserver(this);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         movieListView.setItems(FXCollections.observableList(getWatchListMovies()));
         movieListView.setCellFactory(movieListView -> new MovieCell(true, onRemoveFromWatchListClicked, onExpandDetailsClicked));
-        repo.addObserver(this);
     }
 
     @FXML
     protected void HomeOnClick(ActionEvent event) throws IOException {
+        repo.removeObserver(this);
         FhmdbApplication.switchToHomeScene();
     }
 

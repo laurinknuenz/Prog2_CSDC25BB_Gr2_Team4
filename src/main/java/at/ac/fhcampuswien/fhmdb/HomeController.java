@@ -4,12 +4,11 @@ import at.ac.fhcampuswien.fhmdb.EventListener.Observer;
 import at.ac.fhcampuswien.fhmdb.api.ApiConsumer;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
-import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.interfaces.ClickEventHandler;
-import at.ac.fhcampuswien.fhmdb.sortingstates.SortingState;
 import at.ac.fhcampuswien.fhmdb.models.Genre;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.sortingstates.AscendingState;
+import at.ac.fhcampuswien.fhmdb.sortingstates.SortingState;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -17,14 +16,10 @@ import com.jfoenix.controls.JFXListView;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -56,16 +51,10 @@ public class HomeController implements Initializable, Observer {
     WatchlistRepository repo = WatchlistRepository.getInstance();
 
     private SortingState sortingState = new AscendingState(this);
-    private static HomeController instance;
+    public static final HomeController INSTANCE = new HomeController();
 
     private HomeController() {
-    }
-
-    public static synchronized HomeController getInstance() throws DatabaseException {
-        if (instance == null) {
-            instance = new HomeController();
-        }
-        return instance;
+        WatchlistRepository.getInstance().addObserver(this);
     }
 
     public void setSortingState(SortingState sortingState) {
@@ -79,7 +68,6 @@ public class HomeController implements Initializable, Observer {
         movieListView.setCellFactory(movieListView -> new MovieCell(false, onAddToWatchListClicked, onExpandDetailsClicked));
 
         FilteringOperations();
-        WatchlistRepository.getInstance().addObserver(this);
 
         sortingState.sortObservableList();
     }
@@ -158,9 +146,8 @@ public class HomeController implements Initializable, Observer {
     }
 
     @FXML
-    protected void watchListOnClick(ActionEvent event) throws IOException, DatabaseException {
+    protected void watchListOnClick(ActionEvent event) throws IOException {
         FhmdbApplication.switchToWatchListScene();
-        //WatchlistRepository.getInstance().removeObserver(this);
     }
 
     private final ClickEventHandler<Movie> onAddToWatchListClicked = (clickedMovie) -> {

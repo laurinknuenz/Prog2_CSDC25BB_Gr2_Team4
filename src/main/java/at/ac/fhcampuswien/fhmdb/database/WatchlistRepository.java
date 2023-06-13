@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class WatchlistRepository implements Observable {
-    Dao<WatchlistMovieEntity, Long> dao;
-    private List<Observer> observers;
+    private final Dao<WatchlistMovieEntity, Long> dao;
+    private final List<Observer> observers;
 
     private static WatchlistRepository instance;
 
@@ -23,13 +23,13 @@ public class WatchlistRepository implements Observable {
         this.observers = new ArrayList<>();
     }
 
-    public static WatchlistRepository getInstance(){
+    public static WatchlistRepository getInstance() {
         try {
-            if(instance == null) instance = new WatchlistRepository();
-
+            if (instance == null) instance = new WatchlistRepository();
         } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
+
         return instance;
     }
 
@@ -40,7 +40,7 @@ public class WatchlistRepository implements Observable {
                 dao.create(movie);
                 notifyObservers("Movie successfully added to watchlist!");
             } else
-                 notifyObservers("You already have this in your watch list! \n click ok to continue :) ");
+                notifyObservers("You already have this in your watch list! \n click ok to continue :) ");
         } catch (SQLException e) {
             throw new DatabaseException(("Connection error"), e);
         }
